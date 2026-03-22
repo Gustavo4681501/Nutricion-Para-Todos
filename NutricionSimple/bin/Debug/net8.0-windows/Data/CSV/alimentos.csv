@@ -1,0 +1,61 @@
+id,nombre,calorias,proteinas,carbohidratos,grasas,porcionGramos,categoria
+1,Arroz blanco cocido,130,2.7,28.2,0.3,100,Cereal
+2,Arroz integral cocido,112,2.6,23.5,0.9,100,Cereal
+3,Pan blanco,265,9.0,49.0,3.2,100,Cereal
+4,Pan integral,247,13.0,41.0,3.4,100,Cereal
+5,Avena en hojuelas,389,17.0,66.0,7.0,100,Cereal
+6,Pasta cocida,158,5.8,31.0,0.9,100,Cereal
+7,Quinoa cocida,120,4.4,21.3,1.9,100,Cereal
+8,Tortilla de maíz,218,5.7,46.0,2.8,100,Cereal
+9,Granola,471,10.0,64.0,20.0,100,Cereal
+10,Copos de maíz,357,7.5,84.0,0.4,100,Cereal
+11,Pechuga de pollo,165,31.0,0.0,3.6,100,Carne
+12,Muslo de pollo,209,26.0,0.0,11.0,100,Carne
+13,Carne molida res 90%,176,26.0,0.0,8.0,100,Carne
+14,Filete de res,271,26.0,0.0,18.0,100,Carne
+15,Atún en agua,116,26.0,0.0,1.0,100,Carne
+16,Salmón,208,20.0,0.0,13.0,100,Carne
+17,Tilapia,96,20.0,0.0,2.0,100,Carne
+18,Huevo entero,155,13.0,1.1,11.0,100,Carne
+19,Clara de huevo,52,11.0,0.7,0.2,100,Carne
+20,Cerdo magro,143,26.0,0.0,4.0,100,Carne
+21,Leche entera,61,3.2,4.8,3.3,100,Lacteo
+22,Leche descremada,35,3.4,5.0,0.1,100,Lacteo
+23,Yogur natural,59,10.0,3.6,0.4,100,Lacteo
+24,Yogur griego,97,9.0,4.0,5.0,100,Lacteo
+25,Queso cheddar,402,25.0,1.3,33.0,100,Lacteo
+26,Queso mozzarella,280,28.0,2.2,17.0,100,Lacteo
+27,Queso cottage,98,11.0,3.4,4.3,100,Lacteo
+28,Queso crema,342,6.0,4.1,34.0,100,Lacteo
+29,Mantequilla,717,0.9,0.1,81.0,100,Lacteo
+30,Leche de almendras,17,0.6,0.6,1.5,100,Lacteo
+31,Manzana,52,0.3,14.0,0.2,100,Fruta
+32,Banano,89,1.1,23.0,0.3,100,Fruta
+33,Naranja,47,0.9,12.0,0.1,100,Fruta
+34,Fresa,32,0.7,7.7,0.3,100,Fruta
+35,Mango,60,0.8,15.0,0.4,100,Fruta
+36,Uva,69,0.7,18.0,0.2,100,Fruta
+37,Piña,50,0.5,13.0,0.1,100,Fruta
+38,Sandía,30,0.6,7.6,0.2,100,Fruta
+39,Pera,57,0.4,15.0,0.1,100,Fruta
+40,Melón,34,0.8,8.2,0.2,100,Fruta
+41,Brócoli,34,2.8,6.6,0.4,100,Verdura
+42,Espinaca,23,2.9,3.6,0.4,100,Verdura
+43,Zanahoria,41,0.9,10.0,0.2,100,Verdura
+44,Tomate,18,0.9,3.9,0.2,100,Verdura
+45,Lechuga,15,1.4,2.9,0.2,100,Verdura
+46,Pepino,16,0.7,3.6,0.1,100,Verdura
+47,Cebolla,40,1.1,9.3,0.1,100,Verdura
+48,Aguacate,160,2.0,9.0,15.0,100,Verdura
+49,Apio,16,0.7,3.0,0.2,100,Verdura
+50,Pimiento rojo,31,1.0,7.3,0.3,100,Verdura
+51,Almendras,579,21.0,22.0,50.0,100,Otro
+52,Nueces,654,15.0,14.0,65.0,100,Otro
+53,Cacahuates,567,26.0,16.0,49.0,100,Otro
+54,Aceite de oliva,884,0.0,0.0,100.0,100,Otro
+55,Aceite de coco,862,0.0,0.0,100.0,100,Otro
+56,Mantequilla de mani,588,25.0,20.0,50.0,100,Otro
+57,Semillas de chia,486,17.0,42.0,31.0,100,Otro
+58,Semillas de lino,534,18.0,29.0,42.0,100,Otro
+59,Proteina whey,400,80.0,10.0,5.0,100,Otro
+60,Barra proteica,350,20.0,40.0,10.0,100,Otro
