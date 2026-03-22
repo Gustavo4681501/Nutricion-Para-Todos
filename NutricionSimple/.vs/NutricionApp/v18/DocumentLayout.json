@@ -7,7 +7,15 @@
       "RelativeMoniker": "D:0:0:{B81204D0-95E6-DC43-4160-AE3791600924}|NutricionApp.csproj|solutionrelative:data\\csv\\usuarios.csv||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B81204D0-95E6-DC43-4160-AE3791600924}|NutricionApp.csproj|c:\\users\\gustavo\\downloads\\nutricionsimple (2)\\nutricionsimple\\views\\frmlogin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{B81204D0-95E6-DC43-4160-AE3791600924}|NutricionApp.csproj|c:\\users\\gustavo\\downloads\\nutricionsimple (2)\\nutricionsimple\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B81204D0-95E6-DC43-4160-AE3791600924}|NutricionApp.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B81204D0-95E6-DC43-4160-AE3791600924}|NutricionApp.csproj|C:\\Users\\Gustavo\\Downloads\\NutricionSimple (2)\\NutricionSimple\\views\\frmalimento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{B81204D0-95E6-DC43-4160-AE3791600924}|NutricionApp.csproj|solutionrelative:views\\frmalimento.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B81204D0-95E6-DC43-4160-AE3791600924}|NutricionApp.csproj|C:\\Users\\Gustavo\\Downloads\\NutricionSimple (2)\\NutricionSimple\\views\\frmlogin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{B81204D0-95E6-DC43-4160-AE3791600924}|NutricionApp.csproj|solutionrelative:views\\frmlogin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
@@ -18,8 +26,32 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Gustavo\\Downloads\\NutricionSimple (2)\\NutricionSimple\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\Gustavo\\Downloads\\NutricionSimple (2)\\NutricionSimple\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAAYwCEAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-22T19:36:52.179Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FrmAlimento.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\Gustavo\\Downloads\\NutricionSimple (2)\\NutricionSimple\\Views\\FrmAlimento.cs",
+              "RelativeDocumentMoniker": "Views\\FrmAlimento.cs",
+              "ToolTip": "C:\\Users\\Gustavo\\Downloads\\NutricionSimple (2)\\NutricionSimple\\Views\\FrmAlimento.cs [Dise\u00F1o]",
+              "RelativeToolTip": "Views\\FrmAlimento.cs [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-22T19:36:31.671Z"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
@@ -28,22 +60,21 @@
               "RelativeDocumentMoniker": "Data\\CSV\\usuarios.csv",
               "ToolTip": "C:\\Users\\Gustavo\\Downloads\\NutricionSimple (2)\\NutricionSimple\\Data\\CSV\\usuarios.csv",
               "RelativeToolTip": "Data\\CSV\\usuarios.csv",
-              "ViewState": "AgIAAAIAAAAAAAAAAAAmwBoAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002120|",
               "WhenOpened": "2026-03-22T19:11:24.112Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "FrmLogin.cs [Dise\u00F1o]",
               "DocumentMoniker": "C:\\Users\\Gustavo\\Downloads\\NutricionSimple (2)\\NutricionSimple\\Views\\FrmLogin.cs",
               "RelativeDocumentMoniker": "Views\\FrmLogin.cs",
               "ToolTip": "C:\\Users\\Gustavo\\Downloads\\NutricionSimple (2)\\NutricionSimple\\Views\\FrmLogin.cs [Dise\u00F1o]",
               "RelativeToolTip": "Views\\FrmLogin.cs [Dise\u00F1o]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-22T19:11:04.591Z",
-              "EditorCaption": " [Dise\u00F1o]"
+              "WhenOpened": "2026-03-22T19:11:04.591Z"
             }
           ]
         }

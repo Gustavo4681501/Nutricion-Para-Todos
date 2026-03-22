@@ -1,26 +1,26 @@
 id,nombre,password,edad,peso,altura,sexo,objetivo,nivelActividad,tipoDieta
-1,Carlos Mora,123,25,56.1,164.6,Masculino,Mantener,LigeroActivo,Vegetariano
-2,Ana Jimenez,123,24,85.5,186.2,Femenino,Mantener,ExtraActivo,Keto
-3,Luis Vargas,123,20,56.3,162.7,Masculino,GanarMasa,ExtraActivo,Estandar
-4,Maria Fernandez,123,30,87.2,179.5,Femenino,PerderGrasa,LigeroActivo,Keto
-5,Pedro Salas,123,35,91.4,155.2,Masculino,Mantener,MuyActivo,Keto
-6,Sofia Rojas,123,35,62.0,188.5,Femenino,PerderGrasa,Sedentario,Estandar
-7,Diego Castro,123,42,59.4,184.7,Masculino,GanarMasa,Moderadamente,Estandar
-8,Valeria Nunez,123,47,79.1,189.1,Femenino,PerderGrasa,Sedentario,Vegetariano
-9,Andres Herrera,123,36,92.3,176.6,Masculino,PerderGrasa,ExtraActivo,Estandar
-10,Camila Torres,123,22,57.1,163.0,Femenino,PerderGrasa,Sedentario,Estandar
-11,Jose Quesada,123,24,72.1,170.9,Masculino,PerderGrasa,LigeroActivo,Keto
-12,Laura Mendez,123,40,64.4,164.3,Femenino,GanarMasa,Sedentario,Vegetariano
-13,Miguel Araya,123,28,79.0,163.6,Masculino,PerderGrasa,MuyActivo,Keto
-14,Daniela Brenes,123,32,85.8,184.5,Femenino,Mantener,LigeroActivo,Estandar
-15,Roberto Ulate,123,38,73.1,157.3,Masculino,GanarMasa,Moderadamente,Estandar
-16,Gabriela Fonseca,123,49,72.8,187.0,Femenino,PerderGrasa,LigeroActivo,Keto
-17,Felipe Soto,123,26,66.1,174.6,Masculino,PerderGrasa,ExtraActivo,Keto
-18,Natalia Gomez,123,43,71.3,189.9,Femenino,Mantener,ExtraActivo,Keto
-19,Sebastian Cruz,123,23,89.0,185.1,Masculino,Mantener,LigeroActivo,Vegetariano
-20,Melissa Quiros,123,45,81.8,168.5,Femenino,GanarMasa,MuyActivo,Vegetariano
-21,Alvaro Mora,123,34,98.7,185.1,Masculino,Mantener,Sedentario,Vegetariano
-22,Patricia Leon,123,35,89.6,166.9,Femenino,PerderGrasa,MuyActivo,Estandar
-23,Eduardo Vega,123,47,55.1,180.3,Masculino,GanarMasa,Moderadamente,Vegetariano
-24,Carolina Obando,123,29,77.8,158.7,Femenino,GanarMasa,Moderadamente,Vegetariano
-25,Jorge Badilla,123,50,82.4,160.3,Masculino,Mantener,ExtraActivo,Vegetariano
+1,Carlos,123,25,56.1,164.6,Masculino,Mantener,LigeroActivo,Vegetariano
+2,Ana,123,24,85.5,186.2,Femenino,Mantener,ExtraActivo,Keto
+3,Luis,123,20,56.3,162.7,Masculino,GanarMasa,ExtraActivo,Estandar
+4,Maria,123,30,87.2,179.5,Femenino,PerderGrasa,LigeroActivo,Keto
+5,Pedro,123,35,91.4,155.2,Masculino,Mantener,MuyActivo,Keto
+6,Sofia,123,35,62.0,188.5,Femenino,PerderGrasa,Sedentario,Estandar
+7,Diego,123,42,59.4,184.7,Masculino,GanarMasa,Moderadamente,Estandar
+8,Valeria,123,47,79.1,189.1,Femenino,PerderGrasa,Sedentario,Vegetariano
+9,Andres,123,36,92.3,176.6,Masculino,PerderGrasa,ExtraActivo,Estandar
+10,Camila,123,22,57.1,163.0,Femenino,PerderGrasa,Sedentario,Estandar
+11,Jose,123,24,72.1,170.9,Masculino,PerderGrasa,LigeroActivo,Keto
+12,Laura,123,40,64.4,164.3,Femenino,GanarMasa,Sedentario,Vegetariano
+13,Miguel,123,28,79.0,163.6,Masculino,PerderGrasa,MuyActivo,Keto
+14,Daniela,123,32,85.8,184.5,Femenino,Mantener,LigeroActivo,Estandar
+15,Roberto,123,38,73.1,157.3,Masculino,GanarMasa,Moderadamente,Estandar
+16,Gabriela,123,49,72.8,187.0,Femenino,PerderGrasa,LigeroActivo,Keto
+17,Felipe,123,26,66.1,174.6,Masculino,PerderGrasa,ExtraActivo,Keto
+18,Natalia,123,43,71.3,189.9,Femenino,Mantener,ExtraActivo,Keto
+19,Sebastian,123,23,89.0,185.1,Masculino,Mantener,LigeroActivo,Vegetariano
+20,Melissa,123,45,81.8,168.5,Femenino,GanarMasa,MuyActivo,Vegetariano
+21,Alvaro,123,34,98.7,185.1,Masculino,Mantener,Sedentario,Vegetariano
+22,Patricia,123,35,89.6,166.9,Femenino,PerderGrasa,MuyActivo,Estandar
+23,Eduardo,123,47,55.1,180.3,Masculino,GanarMasa,Moderadamente,Vegetariano
+24,Carolina,123,29,77.8,158.7,Femenino,GanarMasa,Moderadamente,Vegetariano
+25,Jorge,123,50,82.4,160.3,Masculino,Mantener,ExtraActivo,Vegetariano

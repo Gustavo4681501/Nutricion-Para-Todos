@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NutricionApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7a7b706fc17d64e77fb4dcf4e8c70624174f1ac1")]
 [assembly: System.Reflection.AssemblyProductAttribute("NutricionApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NutricionApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
