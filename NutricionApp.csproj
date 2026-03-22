@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>NutricionApp</AssemblyName>
+    <RootNamespace>NutricionApp</RootNamespace>
+    <StartupObject>NutricionApp.Program</StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Data\CSV\usuarios.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\FrmLogin.cs">            <SubType>Form</SubType></Compile>
+    <Compile Update="Views\FrmLogin.Designer.cs">   <DependentUpon>FrmLogin.cs</DependentUpon></Compile>
+    <Compile Update="Views\FrmRegistro.cs">         <SubType>Form</SubType></Compile>
+    <Compile Update="Views\FrmRegistro.Designer.cs"><DependentUpon>FrmRegistro.cs</DependentUpon></Compile>
+    <Compile Update="Views\FrmBienvenida.cs">         <SubType>Form</SubType></Compile>
+    <Compile Update="Views\FrmBienvenida.Designer.cs"><DependentUpon>FrmBienvenida.cs</DependentUpon></Compile>
+  </ItemGroup>
+
+</Project>
