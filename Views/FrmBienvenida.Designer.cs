@@ -115,13 +115,12 @@ namespace NutricionApp.Views
             // 
             // btnAlimentos
             // 
-            btnAlimentos.Enabled = false;
             btnAlimentos.Location = new System.Drawing.Point(117, 131);
             btnAlimentos.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             btnAlimentos.Name = "btnAlimentos";
             btnAlimentos.Size = new System.Drawing.Size(183, 54);
             btnAlimentos.TabIndex = 1;
-            btnAlimentos.Text = "poner el catalogo";
+            btnAlimentos.Text = "Ver el catalogo";
             btnAlimentos.UseVisualStyleBackColor = true;
             btnAlimentos.Click += btnAlimentos_Click;
             // 

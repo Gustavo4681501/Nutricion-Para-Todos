@@ -12,7 +12,7 @@ namespace NutricionApp.Views
     public partial class FrmLogin : Form
     {
         private readonly LoginController _loginController;
-
+        private readonly AlimentoController _alimentoController;
         private string UserName => txtUser.Text;
         private string Password => txtPassword.Text;
 
@@ -21,10 +21,11 @@ namespace NutricionApp.Views
         /// authentication operations.
         /// </summary>
         /// <param name="loginController">The LoginController instance responsible for handling user authentication and login logic. Cannot be null.</param>
-        public FrmLogin(LoginController loginController)
+        public FrmLogin(LoginController loginController, AlimentoController alimentoController)
         {
             InitializeComponent();
             _loginController = loginController;
+            _alimentoController = alimentoController;
         }
 
     
@@ -43,7 +44,7 @@ namespace NutricionApp.Views
             if (_loginController.Login(UserName, Password))
             {
                 this.Hide();
-                var bienvenida = new FrmBienvenida(UserName);
+                var bienvenida = new FrmBienvenida(UserName, _alimentoController);
                 bienvenida.FormClosed += (s, args) => this.Show();
                 bienvenida.Show();
             }

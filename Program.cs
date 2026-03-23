@@ -13,15 +13,16 @@ namespace NutricionApp
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            string csvDir = Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory, "Data", "CSV");
 
-            string filePath = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory, "Data", "CSV", "usuarios.csv");
+            string usuariosPath = Path.Combine(csvDir, "usuarios.csv");
+            string alimentosPath = Path.Combine(csvDir, "alimentos.csv");
 
-            var loginController = new LoginController(filePath);
+            var loginController = new LoginController(usuariosPath);
+            var alimentoController = new AlimentoController(alimentosPath);
 
-            Application.Run(new FrmLogin(loginController));
+            Application.Run(new FrmLogin(loginController, alimentoController));
         }
     }
 }
