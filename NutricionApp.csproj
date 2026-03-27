@@ -18,6 +18,9 @@
 		<Content Include="Data\CSV\alimentos.csv">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
+		<Content Include="Data\CSV\menus.csv">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -50,6 +53,18 @@
 		</Compile>
 		<Compile Update="Views\FrmAgregarAlimento.Designer.cs">
 			<DependentUpon>FrmAgregarAlimento.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Views\FrmMenus.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="Views\FrmMenus.Designer.cs">
+			<DependentUpon>FrmMenus.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Views\FrmCrearMenu.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="Views\FrmCrearMenu.Designer.cs">
+			<DependentUpon>FrmCrearMenu.cs</DependentUpon>
 		</Compile>
 	</ItemGroup>
 

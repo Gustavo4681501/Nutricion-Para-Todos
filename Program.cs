@@ -9,20 +9,25 @@ namespace NutricionApp
 
     internal static class Program
     {
-
+        
         [STAThread]
         static void Main()
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
             string csvDir = Path.Combine(
-            AppDomain.CurrentDomain.BaseDirectory, "Data", "CSV");
+                AppDomain.CurrentDomain.BaseDirectory, "Data", "CSV");
 
-            string usuariosPath = Path.Combine(csvDir, "usuarios.csv");
+            string usuariosPath  = Path.Combine(csvDir, "usuarios.csv");
             string alimentosPath = Path.Combine(csvDir, "alimentos.csv");
+            string menusPath     = Path.Combine(csvDir, "menus.csv");
 
-            var loginController = new LoginController(usuariosPath);
+            var loginController    = new LoginController(usuariosPath);
             var alimentoController = new AlimentoController(alimentosPath);
+            var menuController     = new MenuController(menusPath);
 
-            Application.Run(new FrmLogin(loginController, alimentoController));
+            Application.Run(new FrmLogin(loginController, alimentoController, menuController));
         }
     }
 }

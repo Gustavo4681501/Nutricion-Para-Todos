@@ -23,9 +23,7 @@ namespace NutricionApp.Views
             CargarTabla();
         }
 
-        /// <summary>
-        /// Carga los alimentos en el DataGridView desde el controlador.
-        /// </summary>
+        
         private void CargarTabla()
         {
             dgvAlimentos.Rows.Clear();
@@ -42,9 +40,7 @@ namespace NutricionApp.Views
             }
         }
 
-        /// <summary>
-        /// Abre el formulario para agregar un nuevo alimento.
-        /// </summary>
+       
         private void btnAgregar_Click(object sender, EventArgs e)
         {
             var frm = new FrmAgregarAlimento(_controller);
@@ -52,9 +48,7 @@ namespace NutricionApp.Views
             frm.ShowDialog();
         }
 
-        /// <summary>
-        /// Elimina el alimento seleccionado en la tabla.
-        /// </summary>
+      
         private void btnEliminar_Click(object sender, EventArgs e)
         {
             if (dgvAlimentos.SelectedRows.Count == 0)
@@ -82,9 +76,7 @@ namespace NutricionApp.Views
             }
         }
 
-        /// <summary>
-        /// Cierra el formulario.
-        /// </summary>
+  
         private void btnCerrar_Click(object sender, EventArgs e)
         {
             this.Close();
