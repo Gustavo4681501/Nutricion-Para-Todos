@@ -5,30 +5,35 @@ using NutricionApp.Controllers;
 namespace NutricionApp.Views
 {
     /// <summary>
-    /// Represents a login form that allows users to enter their credentials and access the system.
+    /// Represents the login form for user authentication within the application.
     /// </summary>
-    /// <remarks>This form validates user credentials and provides options for logging in or registering a new
-    /// account. It utilizes a <see cref="LoginController"/> to handle authentication logic.</remarks>
+    /// <remarks>This form provides the user interface for entering credentials and initiating the login
+    /// process. Upon successful authentication, it transitions to the main application interface. The form requires
+    /// controllers for login, food management, and menu management to function correctly.</remarks>
     public partial class FrmLogin : Form
     {
-        private readonly LoginController _loginController;
+        private readonly LoginController    _loginController;
         private readonly AlimentoController _alimentoController;
+        private readonly MenuController     _menuController;
+
         private string UserName => txtUser.Text;
         private string Password => txtPassword.Text;
 
         /// <summary>
-        /// Initializes a new instance of the FrmLogin class using the specified login controller to manage
-        /// authentication operations.
+        /// Initializes a new instance of the FrmLogin form with the specified controllers.
         /// </summary>
-        /// <param name="loginController">The LoginController instance responsible for handling user authentication and login logic. Cannot be null.</param>
-        public FrmLogin(LoginController loginController, AlimentoController alimentoController)
+        /// <param name="loginController">The controller responsible for handling user authentication and login operations. Cannot be null.</param>
+        /// <param name="alimentoController">The controller used to manage food-related data and operations. Cannot be null.</param>
+        /// <param name="menuController">The controller that manages menu-related functionality within the application. Cannot be null.</param>
+        
+        public FrmLogin(LoginController loginController, AlimentoController alimentoController, MenuController menuController)
         {
             InitializeComponent();
-            _loginController = loginController;
+            _loginController    = loginController;
             _alimentoController = alimentoController;
+            _menuController     = menuController;
         }
 
-    
         private void btnLogin_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Password))
@@ -44,7 +49,7 @@ namespace NutricionApp.Views
             if (_loginController.Login(UserName, Password))
             {
                 this.Hide();
-                var bienvenida = new FrmBienvenida(UserName, _alimentoController);
+                var bienvenida = new FrmBienvenida(UserName, _alimentoController, _menuController);
                 bienvenida.FormClosed += (s, args) => this.Show();
                 bienvenida.Show();
             }

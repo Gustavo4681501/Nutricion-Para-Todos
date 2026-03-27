@@ -17,11 +17,10 @@ namespace NutricionApp.Views
     {
         private readonly AlimentoController _controller;
 
-        /// <summary>
-        /// Initializes a new instance of the FrmAgregarAlimento class using the specified AlimentoController to manage
-        /// food-related operations.
-        /// </summary>
-        /// <param name="controller">The AlimentoController instance responsible for handling food data and operations. Cannot be null.</param>
+       /// <summary>
+       /// Initializes a new instance of the FrmAgregarAlimento form with the specified controller.
+       /// </summary>
+       /// <param name="controller">The controller used to manage food-related operations for the form. Cannot be null.</param>
         public FrmAgregarAlimento(AlimentoController controller)
         {
             InitializeComponent();
@@ -75,10 +74,6 @@ namespace NutricionApp.Views
 
             this.Close();
         }
-
-        /// <summary>
-        /// Cierra el formulario sin guardar.
-        /// </summary>
         private void btnCancelar_Click(object sender, EventArgs e)
         {
             this.Close();
