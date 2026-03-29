@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net8.0-windows</TargetFramework>
@@ -19,6 +18,9 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Data\CSV\menus.csv">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Data\CSV\perfiles.csv">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
@@ -65,6 +67,12 @@
 		</Compile>
 		<Compile Update="Views\FrmCrearMenu.Designer.cs">
 			<DependentUpon>FrmCrearMenu.cs</DependentUpon>
+		</Compile>
+		<Compile Update="Views\FrmPerfil.cs">
+			<SubType>Form</SubType>
+		</Compile>
+		<Compile Update="Views\FrmPerfil.Designer.cs">
+			<DependentUpon>FrmPerfil.cs</DependentUpon>
 		</Compile>
 	</ItemGroup>
 
