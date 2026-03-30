@@ -4,13 +4,13 @@ namespace NutricionApp.Views
     {
         private System.ComponentModel.IContainer components = null;
 
-       /// <summary>
-       /// Releases the unmanaged resources used by the component and optionally releases the managed resources.
-       /// </summary>
-       /// <remarks>This method is called by the public Dispose() method and the finalizer. When disposing
-       /// is true, this method disposes all managed resources referenced by this component. When disposing is false,
-       /// only unmanaged resources are released.</remarks>
-       /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        /// <summary>
+        /// Releases the unmanaged resources used by the component and optionally releases the managed resources.
+        /// </summary>
+        /// <remarks>This method is called by the public Dispose() method and the finalizer. When disposing
+        /// is true, this method disposes all managed resources referenced by this component. When disposing is false,
+        /// only unmanaged resources are released.</remarks>
+        /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -42,9 +42,7 @@ namespace NutricionApp.Views
             grpEstadisticas.SuspendLayout();
             grpPerfil.SuspendLayout();
             SuspendLayout();
-            // 
             // lblBienvenida
-            // 
             lblBienvenida.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold);
             lblBienvenida.Location = new System.Drawing.Point(20, 29);
             lblBienvenida.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
@@ -53,9 +51,7 @@ namespace NutricionApp.Views
             lblBienvenida.TabIndex = 0;
             lblBienvenida.Text = "Bienvenido!";
             lblBienvenida.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // lblSubtitulo
-            // 
             lblSubtitulo.ForeColor = System.Drawing.SystemColors.GrayText;
             lblSubtitulo.Location = new System.Drawing.Point(20, 96);
             lblSubtitulo.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
@@ -64,9 +60,7 @@ namespace NutricionApp.Views
             lblSubtitulo.TabIndex = 1;
             lblSubtitulo.Text = "Selecciona una opcion para comenzar";
             lblSubtitulo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // grpMenus
-            // 
             grpMenus.Controls.Add(btnMenus);
             grpMenus.Controls.Add(lblMenusDesc);
             grpMenus.Location = new System.Drawing.Point(33, 154);
@@ -77,9 +71,7 @@ namespace NutricionApp.Views
             grpMenus.TabIndex = 2;
             grpMenus.TabStop = false;
             grpMenus.Text = "Mis Menus";
-            // 
             // btnMenus
-            // 
             btnMenus.Location = new System.Drawing.Point(117, 131);
             btnMenus.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             btnMenus.Name = "btnMenus";
@@ -88,9 +80,7 @@ namespace NutricionApp.Views
             btnMenus.Text = "Ver menus";
             btnMenus.UseVisualStyleBackColor = true;
             btnMenus.Click += btnMenus_Click;
-            // 
             // lblMenusDesc
-            // 
             lblMenusDesc.ForeColor = System.Drawing.SystemColors.GrayText;
             lblMenusDesc.Location = new System.Drawing.Point(13, 42);
             lblMenusDesc.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
@@ -98,9 +88,7 @@ namespace NutricionApp.Views
             lblMenusDesc.Size = new System.Drawing.Size(390, 77);
             lblMenusDesc.TabIndex = 0;
             lblMenusDesc.Text = "Crea y administra tus menus diarios de comida.";
-            // 
             // grpAlimentos
-            // 
             grpAlimentos.Controls.Add(btnAlimentos);
             grpAlimentos.Controls.Add(lblAlimentosDesc);
             grpAlimentos.Location = new System.Drawing.Point(517, 154);
@@ -111,9 +99,7 @@ namespace NutricionApp.Views
             grpAlimentos.TabIndex = 3;
             grpAlimentos.TabStop = false;
             grpAlimentos.Text = "Catalogo de Alimentos";
-            // 
             // btnAlimentos
-            // 
             btnAlimentos.Location = new System.Drawing.Point(117, 131);
             btnAlimentos.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             btnAlimentos.Name = "btnAlimentos";
@@ -122,9 +108,7 @@ namespace NutricionApp.Views
             btnAlimentos.Text = "Ver catalogo";
             btnAlimentos.UseVisualStyleBackColor = true;
             btnAlimentos.Click += btnAlimentos_Click;
-            // 
             // lblAlimentosDesc
-            // 
             lblAlimentosDesc.ForeColor = System.Drawing.SystemColors.GrayText;
             lblAlimentosDesc.Location = new System.Drawing.Point(13, 42);
             lblAlimentosDesc.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
@@ -132,9 +116,7 @@ namespace NutricionApp.Views
             lblAlimentosDesc.Size = new System.Drawing.Size(390, 77);
             lblAlimentosDesc.TabIndex = 0;
             lblAlimentosDesc.Text = "Consulta y agrega alimentos con sus valores nutricionales.";
-            // 
             // grpEstadisticas
-            // 
             grpEstadisticas.Controls.Add(btnEstadisticas);
             grpEstadisticas.Controls.Add(lblEstDesc);
             grpEstadisticas.Location = new System.Drawing.Point(33, 394);
@@ -145,20 +127,17 @@ namespace NutricionApp.Views
             grpEstadisticas.TabIndex = 4;
             grpEstadisticas.TabStop = false;
             grpEstadisticas.Text = "Estadisticas";
-            // 
-            // btnEstadisticas
-            // 
-            btnEstadisticas.Enabled = false;
+            // btnEstadisticas  <-- habilitado en este avance
+            btnEstadisticas.Enabled = true;
             btnEstadisticas.Location = new System.Drawing.Point(117, 131);
             btnEstadisticas.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             btnEstadisticas.Name = "btnEstadisticas";
             btnEstadisticas.Size = new System.Drawing.Size(183, 54);
             btnEstadisticas.TabIndex = 1;
-            btnEstadisticas.Text = "poner estadisticas";
+            btnEstadisticas.Text = "Ver estadisticas";
             btnEstadisticas.UseVisualStyleBackColor = true;
-            // 
+            btnEstadisticas.Click += btnEstadisticas_Click;
             // lblEstDesc
-            // 
             lblEstDesc.ForeColor = System.Drawing.SystemColors.GrayText;
             lblEstDesc.Location = new System.Drawing.Point(13, 42);
             lblEstDesc.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
@@ -166,9 +145,7 @@ namespace NutricionApp.Views
             lblEstDesc.Size = new System.Drawing.Size(390, 77);
             lblEstDesc.TabIndex = 0;
             lblEstDesc.Text = "Revisa tu consumo calorico diario y mensual.";
-            // 
             // grpPerfil
-            // 
             grpPerfil.Controls.Add(btnPerfil);
             grpPerfil.Controls.Add(lblPerfilDesc);
             grpPerfil.Location = new System.Drawing.Point(517, 394);
@@ -179,9 +156,7 @@ namespace NutricionApp.Views
             grpPerfil.TabIndex = 5;
             grpPerfil.TabStop = false;
             grpPerfil.Text = "Mi Perfil";
-            // 
             // btnPerfil
-            // 
             btnPerfil.Location = new System.Drawing.Point(117, 131);
             btnPerfil.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             btnPerfil.Name = "btnPerfil";
@@ -190,9 +165,7 @@ namespace NutricionApp.Views
             btnPerfil.Text = "Ver mi perfil";
             btnPerfil.UseVisualStyleBackColor = true;
             btnPerfil.Click += btnPerfil_Click_1;
-            // 
             // lblPerfilDesc
-            // 
             lblPerfilDesc.ForeColor = System.Drawing.SystemColors.GrayText;
             lblPerfilDesc.Location = new System.Drawing.Point(13, 42);
             lblPerfilDesc.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
@@ -200,9 +173,7 @@ namespace NutricionApp.Views
             lblPerfilDesc.Size = new System.Drawing.Size(390, 77);
             lblPerfilDesc.TabIndex = 0;
             lblPerfilDesc.Text = "Configura tu peso, altura, objetivo y tipo de dieta.";
-            // 
             // btnSalir
-            // 
             btnSalir.Location = new System.Drawing.Point(383, 638);
             btnSalir.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             btnSalir.Name = "btnSalir";
@@ -211,9 +182,7 @@ namespace NutricionApp.Views
             btnSalir.Text = "Cerrar sesion";
             btnSalir.UseVisualStyleBackColor = true;
             btnSalir.Click += btnSalir_Click;
-            // 
             // FrmBienvenida
-            // 
             AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(973, 721);
@@ -239,20 +208,20 @@ namespace NutricionApp.Views
 
         #endregion
 
-        private System.Windows.Forms.Label    lblBienvenida;
-        private System.Windows.Forms.Label    lblSubtitulo;
+        private System.Windows.Forms.Label lblBienvenida;
+        private System.Windows.Forms.Label lblSubtitulo;
         private System.Windows.Forms.GroupBox grpMenus;
-        private System.Windows.Forms.Label    lblMenusDesc;
-        private System.Windows.Forms.Button   btnMenus;
+        private System.Windows.Forms.Label lblMenusDesc;
+        private System.Windows.Forms.Button btnMenus;
         private System.Windows.Forms.GroupBox grpAlimentos;
-        private System.Windows.Forms.Label    lblAlimentosDesc;
-        private System.Windows.Forms.Button   btnAlimentos;
+        private System.Windows.Forms.Label lblAlimentosDesc;
+        private System.Windows.Forms.Button btnAlimentos;
         private System.Windows.Forms.GroupBox grpEstadisticas;
-        private System.Windows.Forms.Label    lblEstDesc;
-        private System.Windows.Forms.Button   btnEstadisticas;
+        private System.Windows.Forms.Label lblEstDesc;
+        private System.Windows.Forms.Button btnEstadisticas;
         private System.Windows.Forms.GroupBox grpPerfil;
-        private System.Windows.Forms.Label    lblPerfilDesc;
-        private System.Windows.Forms.Button   btnPerfil;
-        private System.Windows.Forms.Button   btnSalir;
+        private System.Windows.Forms.Label lblPerfilDesc;
+        private System.Windows.Forms.Button btnPerfil;
+        private System.Windows.Forms.Button btnSalir;
     }
 }
