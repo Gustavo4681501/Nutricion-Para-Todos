@@ -16,329 +16,213 @@ namespace NutricionApp.Views
 
         private void InitializeComponent()
         {
-            grpHoy = new System.Windows.Forms.GroupBox();
-            lblHoyFalta = new System.Windows.Forms.Label();
-            pbHoy = new System.Windows.Forms.ProgressBar();
-            lblHoyConsumo = new System.Windows.Forms.Label();
-            lblHoyFecha = new System.Windows.Forms.Label();
-            grpDiario = new System.Windows.Forms.GroupBox();
-            dgvDiario = new System.Windows.Forms.DataGridView();
-            colFecha = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colCal = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colMeta = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colPct = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colCumple = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            btnBuscarDiario = new System.Windows.Forms.Button();
-            dtpHasta = new System.Windows.Forms.DateTimePicker();
-            lblHasta = new System.Windows.Forms.Label();
-            dtpDesde = new System.Windows.Forms.DateTimePicker();
-            lblDesde = new System.Windows.Forms.Label();
-            grpMensual = new System.Windows.Forms.GroupBox();
-            lblMensualResultado = new System.Windows.Forms.Label();
-            btnBuscarMensual = new System.Windows.Forms.Button();
-            numAnio = new System.Windows.Forms.NumericUpDown();
-            lblAnioLabel = new System.Windows.Forms.Label();
-            cmbMes = new System.Windows.Forms.ComboBox();
-            lblMesLabel = new System.Windows.Forms.Label();
-            btnCerrar = new System.Windows.Forms.Button();
-            grpHoy.SuspendLayout();
-            grpDiario.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvDiario).BeginInit();
-            grpMensual.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numAnio).BeginInit();
-            SuspendLayout();
-            // 
+            this.grpHoy              = new System.Windows.Forms.GroupBox();
+            this.lblHoyFecha         = new System.Windows.Forms.Label();
+            this.lblHoyConsumo       = new System.Windows.Forms.Label();
+            this.pbHoy               = new System.Windows.Forms.ProgressBar();
+            this.lblHoyFalta         = new System.Windows.Forms.Label();
+            this.grpDiario           = new System.Windows.Forms.GroupBox();
+            this.lblDesde            = new System.Windows.Forms.Label();
+            this.dtpDesde            = new System.Windows.Forms.DateTimePicker();
+            this.lblHasta            = new System.Windows.Forms.Label();
+            this.dtpHasta            = new System.Windows.Forms.DateTimePicker();
+            this.btnBuscarDiario     = new System.Windows.Forms.Button();
+            this.dgvDiario           = new System.Windows.Forms.DataGridView();
+            this.colFecha            = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCal              = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMeta             = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPct              = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCumple           = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.grpMensual          = new System.Windows.Forms.GroupBox();
+            this.lblMesLabel         = new System.Windows.Forms.Label();
+            this.cmbMes              = new System.Windows.Forms.ComboBox();
+            this.lblAnioLabel        = new System.Windows.Forms.Label();
+            this.numAnio             = new System.Windows.Forms.NumericUpDown();
+            this.btnBuscarMensual    = new System.Windows.Forms.Button();
+            this.lblMensualResultado = new System.Windows.Forms.Label();
+            this.btnCerrar           = new System.Windows.Forms.Button();
+            this.grpHoy.SuspendLayout();
+            this.grpDiario.SuspendLayout();
+            this.grpMensual.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvDiario)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numAnio)).BeginInit();
+            this.SuspendLayout();
             // grpHoy
-            // 
-            grpHoy.Controls.Add(lblHoyFalta);
-            grpHoy.Controls.Add(pbHoy);
-            grpHoy.Controls.Add(lblHoyConsumo);
-            grpHoy.Controls.Add(lblHoyFecha);
-            grpHoy.Location = new System.Drawing.Point(20, 19);
-            grpHoy.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            grpHoy.Name = "grpHoy";
-            grpHoy.Padding = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            grpHoy.Size = new System.Drawing.Size(1267, 231);
-            grpHoy.TabIndex = 0;
-            grpHoy.TabStop = false;
-            // 
-            // lblHoyFalta
-            // 
-            lblHoyFalta.AutoSize = true;
-            lblHoyFalta.Location = new System.Drawing.Point(17, 167);
-            lblHoyFalta.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            lblHoyFalta.Name = "lblHoyFalta";
-            lblHoyFalta.Size = new System.Drawing.Size(26, 25);
-            lblHoyFalta.TabIndex = 0;
-            lblHoyFalta.Text = "--";
-            // 
-            // pbHoy
-            // 
-            pbHoy.Location = new System.Drawing.Point(17, 125);
-            pbHoy.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            pbHoy.Name = "pbHoy";
-            pbHoy.Size = new System.Drawing.Size(1217, 31);
-            pbHoy.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            pbHoy.TabIndex = 1;
-            pbHoy.Click += pbHoy_Click;
-            // 
-            // lblHoyConsumo
-            // 
-            lblHoyConsumo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
-            lblHoyConsumo.Location = new System.Drawing.Point(17, 81);
-            lblHoyConsumo.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            lblHoyConsumo.Name = "lblHoyConsumo";
-            lblHoyConsumo.Size = new System.Drawing.Size(1217, 35);
-            lblHoyConsumo.TabIndex = 2;
-            lblHoyConsumo.Text = "Consumido: — kcal     Meta: — kcal";
-            // 
+            this.grpHoy.Controls.Add(this.lblHoyFalta);
+            this.grpHoy.Controls.Add(this.pbHoy);
+            this.grpHoy.Controls.Add(this.lblHoyConsumo);
+            this.grpHoy.Controls.Add(this.lblHoyFecha);
+            this.grpHoy.Location = new System.Drawing.Point(12, 10);
+            this.grpHoy.Name     = "grpHoy";
+            this.grpHoy.Size     = new System.Drawing.Size(760, 120);
+            this.grpHoy.TabIndex = 0;
+            this.grpHoy.Text     = "Resumen de hoy";
             // lblHoyFecha
-            // 
-            lblHoyFecha.AutoSize = true;
-            lblHoyFecha.Location = new System.Drawing.Point(17, 42);
-            lblHoyFecha.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            lblHoyFecha.Name = "lblHoyFecha";
-            lblHoyFecha.Size = new System.Drawing.Size(49, 25);
-            lblHoyFecha.TabIndex = 3;
-            lblHoyFecha.Text = "Hoy:";
-            // 
+            this.lblHoyFecha.AutoSize = true;
+            this.lblHoyFecha.Location = new System.Drawing.Point(10, 22);
+            this.lblHoyFecha.Name     = "lblHoyFecha";
+            this.lblHoyFecha.Text     = "Hoy:";
+            // lblHoyConsumo
+            this.lblHoyConsumo.Font     = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
+            this.lblHoyConsumo.Location = new System.Drawing.Point(10, 42);
+            this.lblHoyConsumo.Name     = "lblHoyConsumo";
+            this.lblHoyConsumo.Size     = new System.Drawing.Size(730, 18);
+            this.lblHoyConsumo.Text     = "Consumido: — kcal     Meta: — kcal";
+            // pbHoy
+            this.pbHoy.Location = new System.Drawing.Point(10, 65);
+            this.pbHoy.Name     = "pbHoy";
+            this.pbHoy.Size     = new System.Drawing.Size(730, 16);
+            this.pbHoy.Style    = System.Windows.Forms.ProgressBarStyle.Continuous;
+            // lblHoyFalta
+            this.lblHoyFalta.AutoSize = true;
+            this.lblHoyFalta.Location = new System.Drawing.Point(10, 87);
+            this.lblHoyFalta.Name     = "lblHoyFalta";
+            this.lblHoyFalta.Text     = "--";
             // grpDiario
-            // 
-            grpDiario.Controls.Add(dgvDiario);
-            grpDiario.Controls.Add(btnBuscarDiario);
-            grpDiario.Controls.Add(dtpHasta);
-            grpDiario.Controls.Add(lblHasta);
-            grpDiario.Controls.Add(dtpDesde);
-            grpDiario.Controls.Add(lblDesde);
-            grpDiario.Location = new System.Drawing.Point(20, 269);
-            grpDiario.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            grpDiario.Name = "grpDiario";
-            grpDiario.Padding = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            grpDiario.Size = new System.Drawing.Size(783, 712);
-            grpDiario.TabIndex = 1;
-            grpDiario.TabStop = false;
-            grpDiario.Text = "Historial diario";
-            // 
-            // dgvDiario
-            // 
-            dgvDiario.AllowUserToAddRows = false;
-            dgvDiario.AllowUserToDeleteRows = false;
-            dgvDiario.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvDiario.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colFecha, colCal, colMeta, colPct, colCumple });
-            dgvDiario.Location = new System.Drawing.Point(13, 100);
-            dgvDiario.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            dgvDiario.MultiSelect = false;
-            dgvDiario.Name = "dgvDiario";
-            dgvDiario.ReadOnly = true;
-            dgvDiario.RowHeadersVisible = false;
-            dgvDiario.RowHeadersWidth = 62;
-            dgvDiario.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvDiario.Size = new System.Drawing.Size(753, 588);
-            dgvDiario.TabIndex = 3;
-            // 
-            // colFecha
-            // 
-            colFecha.HeaderText = "Fecha";
-            colFecha.MinimumWidth = 8;
-            colFecha.Name = "colFecha";
-            colFecha.ReadOnly = true;
-            colFecha.Width = 90;
-            // 
-            // colCal
-            // 
-            colCal.HeaderText = "Calorias";
-            colCal.MinimumWidth = 8;
-            colCal.Name = "colCal";
-            colCal.ReadOnly = true;
-            colCal.Width = 75;
-            // 
-            // colMeta
-            // 
-            colMeta.HeaderText = "Meta";
-            colMeta.MinimumWidth = 8;
-            colMeta.Name = "colMeta";
-            colMeta.ReadOnly = true;
-            colMeta.Width = 75;
-            // 
-            // colPct
-            // 
-            colPct.HeaderText = "% Cumplido";
-            colPct.MinimumWidth = 8;
-            colPct.Name = "colPct";
-            colPct.ReadOnly = true;
-            colPct.Width = 80;
-            // 
-            // colCumple
-            // 
-            colCumple.HeaderText = "Meta cumplida";
-            colCumple.MinimumWidth = 8;
-            colCumple.Name = "colCumple";
-            colCumple.ReadOnly = true;
-            colCumple.Width = 90;
-            // 
-            // btnBuscarDiario
-            // 
-            btnBuscarDiario.Location = new System.Drawing.Point(570, 37);
-            btnBuscarDiario.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            btnBuscarDiario.Name = "btnBuscarDiario";
-            btnBuscarDiario.Size = new System.Drawing.Size(133, 50);
-            btnBuscarDiario.TabIndex = 2;
-            btnBuscarDiario.Text = "Buscar";
-            btnBuscarDiario.UseVisualStyleBackColor = true;
-            btnBuscarDiario.Click += btnBuscarDiario_Click;
-            // 
-            // dtpHasta
-            // 
-            dtpHasta.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            dtpHasta.Location = new System.Drawing.Point(367, 40);
-            dtpHasta.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            dtpHasta.Name = "dtpHasta";
-            dtpHasta.Size = new System.Drawing.Size(181, 31);
-            dtpHasta.TabIndex = 1;
-            // 
-            // lblHasta
-            // 
-            lblHasta.AutoSize = true;
-            lblHasta.Location = new System.Drawing.Point(292, 48);
-            lblHasta.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            lblHasta.Name = "lblHasta";
-            lblHasta.Size = new System.Drawing.Size(61, 25);
-            lblHasta.TabIndex = 4;
-            lblHasta.Text = "Hasta:";
-            // 
-            // dtpDesde
-            // 
-            dtpDesde.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            dtpDesde.Location = new System.Drawing.Point(92, 40);
-            dtpDesde.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            dtpDesde.Name = "dtpDesde";
-            dtpDesde.Size = new System.Drawing.Size(181, 31);
-            dtpDesde.TabIndex = 0;
-            // 
+            this.grpDiario.Controls.Add(this.dgvDiario);
+            this.grpDiario.Controls.Add(this.btnBuscarDiario);
+            this.grpDiario.Controls.Add(this.dtpHasta);
+            this.grpDiario.Controls.Add(this.lblHasta);
+            this.grpDiario.Controls.Add(this.dtpDesde);
+            this.grpDiario.Controls.Add(this.lblDesde);
+            this.grpDiario.Location = new System.Drawing.Point(12, 140);
+            this.grpDiario.Name     = "grpDiario";
+            this.grpDiario.Size     = new System.Drawing.Size(470, 370);
+            this.grpDiario.TabIndex = 1;
+            this.grpDiario.Text     = "Historial diario";
             // lblDesde
-            // 
-            lblDesde.AutoSize = true;
-            lblDesde.Location = new System.Drawing.Point(13, 48);
-            lblDesde.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            lblDesde.Name = "lblDesde";
-            lblDesde.Size = new System.Drawing.Size(66, 25);
-            lblDesde.TabIndex = 5;
-            lblDesde.Text = "Desde:";
-            // 
+            this.lblDesde.AutoSize = true;
+            this.lblDesde.Location = new System.Drawing.Point(8, 25);
+            this.lblDesde.Name     = "lblDesde";
+            this.lblDesde.Text     = "Desde:";
+            // dtpDesde
+            this.dtpDesde.Format   = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpDesde.Location = new System.Drawing.Point(55, 21);
+            this.dtpDesde.Name     = "dtpDesde";
+            this.dtpDesde.Size     = new System.Drawing.Size(110, 20);
+            this.dtpDesde.TabIndex = 0;
+            // lblHasta
+            this.lblHasta.AutoSize = true;
+            this.lblHasta.Location = new System.Drawing.Point(175, 25);
+            this.lblHasta.Name     = "lblHasta";
+            this.lblHasta.Text     = "Hasta:";
+            // dtpHasta
+            this.dtpHasta.Format   = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpHasta.Location = new System.Drawing.Point(220, 21);
+            this.dtpHasta.Name     = "dtpHasta";
+            this.dtpHasta.Size     = new System.Drawing.Size(110, 20);
+            this.dtpHasta.TabIndex = 1;
+            // btnBuscarDiario
+            this.btnBuscarDiario.Location = new System.Drawing.Point(342, 19);
+            this.btnBuscarDiario.Name     = "btnBuscarDiario";
+            this.btnBuscarDiario.Size     = new System.Drawing.Size(80, 26);
+            this.btnBuscarDiario.TabIndex = 2;
+            this.btnBuscarDiario.Text     = "Buscar";
+            this.btnBuscarDiario.UseVisualStyleBackColor = true;
+            this.btnBuscarDiario.Click += new System.EventHandler(this.btnBuscarDiario_Click);
+            // columns
+            this.colFecha.HeaderText  = "Fecha";         this.colFecha.Name  = "colFecha";  this.colFecha.Width  = 90;  this.colFecha.ReadOnly  = true;
+            this.colCal.HeaderText    = "Calorias";       this.colCal.Name    = "colCal";    this.colCal.Width    = 75;  this.colCal.ReadOnly    = true;
+            this.colMeta.HeaderText   = "Meta";           this.colMeta.Name   = "colMeta";   this.colMeta.Width   = 75;  this.colMeta.ReadOnly   = true;
+            this.colPct.HeaderText    = "% Cumplido";     this.colPct.Name    = "colPct";    this.colPct.Width    = 80;  this.colPct.ReadOnly    = true;
+            this.colCumple.HeaderText = "Meta cumplida";  this.colCumple.Name = "colCumple"; this.colCumple.Width = 90;  this.colCumple.ReadOnly = true;
+            // dgvDiario
+            this.dgvDiario.AllowUserToAddRows    = false;
+            this.dgvDiario.AllowUserToDeleteRows = false;
+            this.dgvDiario.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvDiario.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+                this.colFecha, this.colCal, this.colMeta, this.colPct, this.colCumple });
+            this.dgvDiario.Location          = new System.Drawing.Point(8, 52);
+            this.dgvDiario.MultiSelect       = false;
+            this.dgvDiario.Name              = "dgvDiario";
+            this.dgvDiario.ReadOnly          = true;
+            this.dgvDiario.RowHeadersVisible = false;
+            this.dgvDiario.SelectionMode     = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvDiario.Size              = new System.Drawing.Size(452, 306);
+            this.dgvDiario.TabIndex          = 3;
             // grpMensual
-            // 
-            grpMensual.Controls.Add(lblMensualResultado);
-            grpMensual.Controls.Add(btnBuscarMensual);
-            grpMensual.Controls.Add(numAnio);
-            grpMensual.Controls.Add(lblAnioLabel);
-            grpMensual.Controls.Add(cmbMes);
-            grpMensual.Controls.Add(lblMesLabel);
-            grpMensual.Location = new System.Drawing.Point(828, 269);
-            grpMensual.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            grpMensual.Name = "grpMensual";
-            grpMensual.Padding = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            grpMensual.Size = new System.Drawing.Size(458, 712);
-            grpMensual.TabIndex = 2;
-            grpMensual.TabStop = false;
-            grpMensual.Text = "Resumen mensual";
-            // 
-            // lblMensualResultado
-            // 
-            lblMensualResultado.Location = new System.Drawing.Point(13, 163);
-            lblMensualResultado.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            lblMensualResultado.Name = "lblMensualResultado";
-            lblMensualResultado.Size = new System.Drawing.Size(425, 519);
-            lblMensualResultado.TabIndex = 0;
-            lblMensualResultado.Text = "Selecciona un mes y presiona Calcular.";
-            // 
-            // btnBuscarMensual
-            // 
-            btnBuscarMensual.Location = new System.Drawing.Point(217, 94);
-            btnBuscarMensual.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            btnBuscarMensual.Name = "btnBuscarMensual";
-            btnBuscarMensual.Size = new System.Drawing.Size(117, 50);
-            btnBuscarMensual.TabIndex = 2;
-            btnBuscarMensual.Text = "Calcular";
-            btnBuscarMensual.UseVisualStyleBackColor = true;
-            btnBuscarMensual.Click += btnBuscarMensual_Click;
-            // 
-            // numAnio
-            // 
-            numAnio.Location = new System.Drawing.Point(83, 98);
-            numAnio.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            numAnio.Maximum = new decimal(new int[] { 2100, 0, 0, 0 });
-            numAnio.Minimum = new decimal(new int[] { 2020, 0, 0, 0 });
-            numAnio.Name = "numAnio";
-            numAnio.Size = new System.Drawing.Size(117, 31);
-            numAnio.TabIndex = 1;
-            numAnio.Value = new decimal(new int[] { 2025, 0, 0, 0 });
-            // 
-            // lblAnioLabel
-            // 
-            lblAnioLabel.AutoSize = true;
-            lblAnioLabel.Location = new System.Drawing.Point(13, 106);
-            lblAnioLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            lblAnioLabel.Name = "lblAnioLabel";
-            lblAnioLabel.Size = new System.Drawing.Size(53, 25);
-            lblAnioLabel.TabIndex = 3;
-            lblAnioLabel.Text = "Anio:";
-            // 
-            // cmbMes
-            // 
-            cmbMes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cmbMes.FormattingEnabled = true;
-            cmbMes.Items.AddRange(new object[] { "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre" });
-            cmbMes.Location = new System.Drawing.Point(67, 40);
-            cmbMes.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            cmbMes.Name = "cmbMes";
-            cmbMes.Size = new System.Drawing.Size(181, 33);
-            cmbMes.TabIndex = 0;
-            // 
+            this.grpMensual.Controls.Add(this.lblMensualResultado);
+            this.grpMensual.Controls.Add(this.btnBuscarMensual);
+            this.grpMensual.Controls.Add(this.numAnio);
+            this.grpMensual.Controls.Add(this.lblAnioLabel);
+            this.grpMensual.Controls.Add(this.cmbMes);
+            this.grpMensual.Controls.Add(this.lblMesLabel);
+            this.grpMensual.Location = new System.Drawing.Point(497, 140);
+            this.grpMensual.Name     = "grpMensual";
+            this.grpMensual.Size     = new System.Drawing.Size(275, 370);
+            this.grpMensual.TabIndex = 2;
+            this.grpMensual.Text     = "Resumen mensual";
             // lblMesLabel
-            // 
-            lblMesLabel.AutoSize = true;
-            lblMesLabel.Location = new System.Drawing.Point(13, 48);
-            lblMesLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            lblMesLabel.Name = "lblMesLabel";
-            lblMesLabel.Size = new System.Drawing.Size(49, 25);
-            lblMesLabel.TabIndex = 4;
-            lblMesLabel.Text = "Mes:";
-            // 
+            this.lblMesLabel.AutoSize = true;
+            this.lblMesLabel.Location = new System.Drawing.Point(8, 25);
+            this.lblMesLabel.Name     = "lblMesLabel";
+            this.lblMesLabel.Text     = "Mes:";
+            // cmbMes
+            this.cmbMes.DropDownStyle    = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbMes.FormattingEnabled = true;
+            this.cmbMes.Items.AddRange(new object[] {
+                "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+                "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre" });
+            this.cmbMes.Location = new System.Drawing.Point(40, 21);
+            this.cmbMes.Name     = "cmbMes";
+            this.cmbMes.Size     = new System.Drawing.Size(110, 21);
+            this.cmbMes.TabIndex = 0;
+            // lblAnioLabel
+            this.lblAnioLabel.AutoSize = true;
+            this.lblAnioLabel.Location = new System.Drawing.Point(8, 55);
+            this.lblAnioLabel.Name     = "lblAnioLabel";
+            this.lblAnioLabel.Text     = "Anio:";
+            // numAnio
+            this.numAnio.Location = new System.Drawing.Point(50, 51);
+            this.numAnio.Minimum  = new decimal(new int[] { 2020, 0, 0, 0 });
+            this.numAnio.Maximum  = new decimal(new int[] { 2100, 0, 0, 0 });
+            this.numAnio.Name     = "numAnio";
+            this.numAnio.Size     = new System.Drawing.Size(70, 20);
+            this.numAnio.TabIndex = 1;
+            this.numAnio.Value    = new decimal(new int[] { 2025, 0, 0, 0 });
+            // btnBuscarMensual
+            this.btnBuscarMensual.Location = new System.Drawing.Point(130, 49);
+            this.btnBuscarMensual.Name     = "btnBuscarMensual";
+            this.btnBuscarMensual.Size     = new System.Drawing.Size(70, 26);
+            this.btnBuscarMensual.TabIndex = 2;
+            this.btnBuscarMensual.Text     = "Calcular";
+            this.btnBuscarMensual.UseVisualStyleBackColor = true;
+            this.btnBuscarMensual.Click += new System.EventHandler(this.btnBuscarMensual_Click);
+            // lblMensualResultado
+            this.lblMensualResultado.Location = new System.Drawing.Point(8, 85);
+            this.lblMensualResultado.Name     = "lblMensualResultado";
+            this.lblMensualResultado.Size     = new System.Drawing.Size(255, 270);
+            this.lblMensualResultado.Text     = "Selecciona un mes y presiona Calcular.";
             // btnCerrar
-            // 
-            btnCerrar.Location = new System.Drawing.Point(1087, 1008);
-            btnCerrar.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            btnCerrar.Name = "btnCerrar";
-            btnCerrar.Size = new System.Drawing.Size(200, 54);
-            btnCerrar.TabIndex = 3;
-            btnCerrar.Text = "Cerrar";
-            btnCerrar.UseVisualStyleBackColor = true;
-            btnCerrar.Click += btnCerrar_Click;
-            // 
+            this.btnCerrar.Location = new System.Drawing.Point(652, 524);
+            this.btnCerrar.Name     = "btnCerrar";
+            this.btnCerrar.Size     = new System.Drawing.Size(120, 28);
+            this.btnCerrar.TabIndex = 3;
+            this.btnCerrar.Text     = "Cerrar";
+            this.btnCerrar.UseVisualStyleBackColor = true;
+            this.btnCerrar.Click += new System.EventHandler(this.btnCerrar_Click);
             // FrmEstadisticas
-            // 
-            AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(1307, 1050);
-            Controls.Add(btnCerrar);
-            Controls.Add(grpMensual);
-            Controls.Add(grpDiario);
-            Controls.Add(grpHoy);
-            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
-            MaximizeBox = false;
-            Name = "FrmEstadisticas";
-            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            Text = "Estadisticas";
-            grpHoy.ResumeLayout(false);
-            grpHoy.PerformLayout();
-            grpDiario.ResumeLayout(false);
-            grpDiario.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvDiario).EndInit();
-            grpMensual.ResumeLayout(false);
-            grpMensual.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numAnio).EndInit();
-            ResumeLayout(false);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode       = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize          = new System.Drawing.Size(784, 566);
+            this.Controls.Add(this.btnCerrar);
+            this.Controls.Add(this.grpMensual);
+            this.Controls.Add(this.grpDiario);
+            this.Controls.Add(this.grpHoy);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox     = false;
+            this.Name            = "FrmEstadisticas";
+            this.StartPosition   = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text            = "Estadisticas";
+            this.grpHoy.ResumeLayout(false);
+            this.grpHoy.PerformLayout();
+            this.grpDiario.ResumeLayout(false);
+            this.grpDiario.PerformLayout();
+            this.grpMensual.ResumeLayout(false);
+            this.grpMensual.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvDiario)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numAnio)).EndInit();
+            this.ResumeLayout(false);
         }
 
         #endregion

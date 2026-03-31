@@ -74,18 +74,6 @@
 		<Compile Update="Views\FrmPerfil.Designer.cs">
 			<DependentUpon>FrmPerfil.cs</DependentUpon>
 		</Compile>
-		<Compile Update="Views\FrmEstadisticas.cs">
-			<SubType>Form</SubType>
-		</Compile>
-		<Compile Update="Views\FrmEstadisticas.Designer.cs">
-			<DependentUpon>FrmEstadisticas.cs</DependentUpon>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Update="Views\FrmEstadisticas.resx">
-			<DependentUpon>FrmEstadisticas.cs</DependentUpon>
-		</EmbeddedResource>
 	</ItemGroup>
 
 </Project>
