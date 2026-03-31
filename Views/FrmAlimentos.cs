@@ -23,7 +23,7 @@ namespace NutricionApp.Views
             CargarTabla();
         }
 
-        
+
         private void CargarTabla()
         {
             dgvAlimentos.Rows.Clear();
@@ -40,7 +40,7 @@ namespace NutricionApp.Views
             }
         }
 
-       
+
         private void btnAgregar_Click(object sender, EventArgs e)
         {
             var frm = new FrmAgregarAlimento(_controller);
@@ -48,7 +48,7 @@ namespace NutricionApp.Views
             frm.ShowDialog();
         }
 
-      
+
         private void btnEliminar_Click(object sender, EventArgs e)
         {
             if (dgvAlimentos.SelectedRows.Count == 0)
@@ -76,10 +76,15 @@ namespace NutricionApp.Views
             }
         }
 
-  
+
         private void btnCerrar_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void dgvAlimentos_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

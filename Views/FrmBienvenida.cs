@@ -60,5 +60,12 @@ namespace NutricionApp.Views
             var frm = new FrmPerfil(_userName, _perfilController);
             frm.ShowDialog();
         }
+
+ 
+        private void btnEstadisticas_Click(object sender, EventArgs e)
+        {
+            var frm = new FrmEstadisticas(_userName, _menuController, _perfilController);
+            frm.ShowDialog();
+        }
     }
 }
