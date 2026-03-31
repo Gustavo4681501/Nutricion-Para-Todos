@@ -6,7 +6,6 @@ using NutricionApp.Views;
 
 namespace NutricionApp
 {
-
     internal static class Program
     {
         
@@ -19,15 +18,27 @@ namespace NutricionApp
             string csvDir = Path.Combine(
                 AppDomain.CurrentDomain.BaseDirectory, "Data", "CSV");
 
-            string usuariosPath  = Path.Combine(csvDir, "usuarios.csv");
+            Directory.CreateDirectory(csvDir);
+
+            string usuariosPath = Path.Combine(csvDir, "usuarios.csv");
             string alimentosPath = Path.Combine(csvDir, "alimentos.csv");
-            string menusPath     = Path.Combine(csvDir, "menus.csv");
+            string menusPath = Path.Combine(csvDir, "menus.csv");
+            string perfilesPath = Path.Combine(csvDir, "perfiles.csv");
 
-            var loginController    = new LoginController(usuariosPath);
+            if (!File.Exists(menusPath))
+                File.WriteAllText(menusPath, "UserName,Fecha,NombreAlimento,CantidadGramos,Calorias\n");
+
+            if (!File.Exists(perfilesPath))
+                File.WriteAllText(perfilesPath, "UserName,Edad,PesoKg,AlturaCm,Objetivo\n");
+
+            var loginController = new LoginController(usuariosPath);
             var alimentoController = new AlimentoController(alimentosPath);
-            var menuController     = new MenuController(menusPath);
+            var menuController = new MenuController(menusPath);
+            var perfilController = new PerfilController(perfilesPath);
 
-            Application.Run(new FrmLogin(loginController, alimentoController, menuController));
+            Application.Run(new FrmLogin(loginController, alimentoController,
+                menuController, perfilController));
         }
     }
 }
+

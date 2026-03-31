@@ -12,9 +12,10 @@ namespace NutricionApp.Views
     /// controllers for login, food management, and menu management to function correctly.</remarks>
     public partial class FrmLogin : Form
     {
-        private readonly LoginController    _loginController;
+        private readonly LoginController _loginController;
         private readonly AlimentoController _alimentoController;
-        private readonly MenuController     _menuController;
+        private readonly MenuController _menuController;
+        private readonly PerfilController _perfilController;
 
         private string UserName => txtUser.Text;
         private string Password => txtPassword.Text;
@@ -25,13 +26,14 @@ namespace NutricionApp.Views
         /// <param name="loginController">The controller responsible for handling user authentication and login operations. Cannot be null.</param>
         /// <param name="alimentoController">The controller used to manage food-related data and operations. Cannot be null.</param>
         /// <param name="menuController">The controller that manages menu-related functionality within the application. Cannot be null.</param>
-        
-        public FrmLogin(LoginController loginController, AlimentoController alimentoController, MenuController menuController)
+        public FrmLogin(LoginController loginController, AlimentoController alimentoController,
+            MenuController menuController, PerfilController perfilController)
         {
             InitializeComponent();
-            _loginController    = loginController;
+            _loginController = loginController;
             _alimentoController = alimentoController;
-            _menuController     = menuController;
+            _menuController = menuController;
+            _perfilController = perfilController;
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
@@ -49,7 +51,8 @@ namespace NutricionApp.Views
             if (_loginController.Login(UserName, Password))
             {
                 this.Hide();
-                var bienvenida = new FrmBienvenida(UserName, _alimentoController, _menuController);
+                var bienvenida = new FrmBienvenida(UserName, _alimentoController,
+                    _menuController, _perfilController);
                 bienvenida.FormClosed += (s, args) => this.Show();
                 bienvenida.Show();
             }
