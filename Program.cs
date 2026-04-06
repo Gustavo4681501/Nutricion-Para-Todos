@@ -8,7 +8,14 @@ namespace NutricionApp
 {
     internal static class Program
     {
-        
+        /// <summary>
+        /// Serves as the main entry point for the application, initializing the user interface and ensuring required
+        /// data files are present before launching the login form.
+        /// </summary>
+        /// <remarks>This method creates the necessary data directory and CSV files if they do not already
+        /// exist. It also initializes controllers for user authentication, food items, menus, and user profiles, and
+        /// then starts the application's login form. The method must be marked with the [STAThread] attribute to
+        /// support Windows Forms functionality.</remarks>
         [STAThread]
         static void Main()
         {
@@ -24,6 +31,12 @@ namespace NutricionApp
             string alimentosPath = Path.Combine(csvDir, "alimentos.csv");
             string menusPath = Path.Combine(csvDir, "menus.csv");
             string perfilesPath = Path.Combine(csvDir, "perfiles.csv");
+
+            if (!File.Exists(usuariosPath))
+                File.WriteAllText(usuariosPath, "UserName,Password\n");
+
+            if (!File.Exists(alimentosPath))
+                File.WriteAllText(alimentosPath, "Nombre,Calorias,Proteinas,Carbohidratos,Grasas,Porcion\n");
 
             if (!File.Exists(menusPath))
                 File.WriteAllText(menusPath, "UserName,Fecha,NombreAlimento,CantidadGramos,Calorias\n");
@@ -41,4 +54,3 @@ namespace NutricionApp
         }
     }
 }
-

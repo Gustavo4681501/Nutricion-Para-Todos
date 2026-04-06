@@ -6,18 +6,24 @@ using NutricionApp.Models;
 namespace NutricionApp.Views
 {
    /// <summary>
-   /// 
+   /// Represents a form that allows users to view and edit their profile information, including age, weight, height,
+   /// and nutritional goals.
    /// </summary>
+   /// <remarks>This form is initialized with the active user's name and a profile controller to manage profile
+   /// data. It loads the existing profile or default values, displays calculated results such as recommended calories
+   /// and BMI, and provides functionality to save changes or close the form.</remarks>
     public partial class FrmPerfil : Form
     {
         private readonly PerfilController _controller;
         private readonly string           _userName;
 
         /// <summary>
-        /// Inicializa una nueva instancia de <see cref="FrmPerfil"/>.
+        /// Initializes a new instance of the FrmPerfil class using the specified user name and profile controller.
         /// </summary>
-        /// <param name="userName">Nombre del usuario activo.</param>
-        /// <param name="controller">Controlador de perfiles.</param>
+        /// <remarks>This constructor loads the user's profile information upon initialization by calling
+        /// the CargarPerfil method.</remarks>
+        /// <param name="userName">The user name associated with the profile. This parameter cannot be null or empty.</param>
+        /// <param name="controller">The controller responsible for managing profile-related operations. This parameter must not be null.</param>
         public FrmPerfil(string userName, PerfilController controller)
         {
             InitializeComponent();
@@ -26,7 +32,7 @@ namespace NutricionApp.Views
             CargarPerfil();
         }
 
-        // Carga el perfil existente (o por defecto) y rellena los controles.
+        
         private void CargarPerfil()
         {
             var p = _controller.ObtenerPerfil(_userName);
@@ -57,9 +63,7 @@ namespace NutricionApp.Views
             return "Obesidad";
         }
 
-        /// <summary>
-        /// Guarda el perfil con los datos actuales del formulario.
-        /// </summary>
+        
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             var p = new Perfil(_userName)
@@ -80,9 +84,7 @@ namespace NutricionApp.Views
                 MessageBoxIcon.Information);
         }
 
-        /// <summary>
-        /// Cierra el formulario.
-        /// </summary>
+        
         private void btnCerrar_Click(object sender, EventArgs e)
         {
             this.Close();
