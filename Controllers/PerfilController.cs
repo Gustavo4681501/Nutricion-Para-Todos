@@ -14,13 +14,11 @@ namespace NutricionApp.Controllers
     public class PerfilController : IPerfilController
     {
         private readonly List<Perfil> _perfiles;
-        private readonly string       _filePath;
+        private readonly string _filePath;
 
         /// <summary>
         /// Initializes a new instance of the PerfilController class using the specified file path to load profile data.
         /// </summary>
-        /// <remarks>The constructor loads profiles from the provided file path when the controller is
-        /// instantiated. Ensure that the file exists and is accessible to avoid runtime errors.</remarks>
         /// <param name="filePath">The path to the file that contains the profile data. This parameter cannot be null or empty.</param>
         public PerfilController(string filePath)
         {
@@ -29,13 +27,10 @@ namespace NutricionApp.Controllers
         }
 
         /// <summary>
-        /// Retrieves the profile associated with the specified username, or creates a new profile if none exists.
+        /// Retrieves the profile associated with the specified username, or creates a default profile if none exists.
         /// </summary>
-        /// <remarks>This method searches through the existing profiles to find a match. If no match is
-        /// found, it initializes a new Perfil with the provided username.</remarks>
-        /// <param name="userName">The username for which to retrieve the profile. This parameter cannot be null or empty.</param>
-        /// <returns>A Perfil object representing the user's profile. If a profile with the specified username exists, it is
-        /// returned; otherwise, a new Perfil is created.</returns>
+        /// <param name="userName">The username for which to retrieve the profile.</param>
+        /// <returns>A Perfil object. If no profile exists, a new default one is returned.</returns>
         public Perfil ObtenerPerfil(string userName)
         {
             foreach (var p in _perfiles)
@@ -46,13 +41,15 @@ namespace NutricionApp.Controllers
 
             return new Perfil(userName);
         }
-        
+
         /// <summary>
-        /// Saves the specified user profile, replacing any existing profile for the same user.
+        /// Saves the specified profile by updating an existing profile with the same username or adding a new profile
+        /// if none exists.
         /// </summary>
-        /// <remarks>If a profile with the same user name already exists, it is replaced with the new
-        /// profile. Changes are persisted immediately after the operation.</remarks>
-        /// <param name="perfil">The profile to save. Must contain a valid user name and associated settings.</param>
+        /// <remarks>This method persists changes by calling SavePerfiles after updating or adding the
+        /// profile. If the username already exists in the collection, the existing profile is overwritten.</remarks>
+        /// <param name="perfil">The profile to save. Must contain a valid username. If a profile with the same username already exists, it
+        /// will be replaced.</param>
         public void GuardarPerfil(Perfil perfil)
         {
             for (int i = 0; i < _perfiles.Count; i++)
@@ -84,6 +81,7 @@ namespace NutricionApp.Controllers
                     continue;
 
                 var parts = lines[i].Split(',');
+
                 if (parts.Length >= 5)
                     lista.Add(new Perfil(parts));
             }
@@ -93,7 +91,7 @@ namespace NutricionApp.Controllers
 
         private void SavePerfiles()
         {
-            string header = "UserName,Edad,PesoKg,AlturaCm,Objetivo";
+            string header = "UserName,Edad,PesoKg,AlturaCm,Objetivo,Actividad,Dieta";
             var rows = new List<string> { header };
 
             foreach (var p in _perfiles)

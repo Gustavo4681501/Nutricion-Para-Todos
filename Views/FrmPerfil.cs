@@ -5,25 +5,21 @@ using NutricionApp.Models;
 
 namespace NutricionApp.Views
 {
-   /// <summary>
-   /// Represents a form that allows users to view and edit their profile information, including age, weight, height,
-   /// and nutritional goals.
-   /// </summary>
-   /// <remarks>This form is initialized with the active user's name and a profile controller to manage profile
-   /// data. It loads the existing profile or default values, displays calculated results such as recommended calories
-   /// and BMI, and provides functionality to save changes or close the form.</remarks>
+    /// <summary>
+    /// Represents a form that allows users to view and edit their profile information,
+    /// including age, weight, height, nutritional goal, activity level, and diet type.
+    /// Also displays calculated results: recommended calories, macro distribution, and BMI.
+    /// </summary>
     public partial class FrmPerfil : Form
     {
         private readonly PerfilController _controller;
         private readonly string           _userName;
 
         /// <summary>
-        /// Initializes a new instance of the FrmPerfil class using the specified user name and profile controller.
+        /// Initializes a new instance of the FrmPerfil class.
         /// </summary>
-        /// <remarks>This constructor loads the user's profile information upon initialization by calling
-        /// the CargarPerfil method.</remarks>
-        /// <param name="userName">The user name associated with the profile. This parameter cannot be null or empty.</param>
-        /// <param name="controller">The controller responsible for managing profile-related operations. This parameter must not be null.</param>
+        /// <param name="userName">The user name associated with the profile.</param>
+        /// <param name="controller">The controller responsible for managing profile-related operations.</param>
         public FrmPerfil(string userName, PerfilController controller)
         {
             InitializeComponent();
@@ -32,27 +28,37 @@ namespace NutricionApp.Views
             CargarPerfil();
         }
 
-        
+        /// <summary>
+        /// Loads the user's profile from the controller and populates all form fields.
+        /// </summary>
         private void CargarPerfil()
         {
             var p = _controller.ObtenerPerfil(_userName);
 
-            numEdad.Value   = p.Edad;
-            numPeso.Value   = (decimal)p.PesoKg;
-            numAltura.Value = (decimal)p.AlturaCm;
+            numEdad.Value             = p.Edad;
+            numPeso.Value             = (decimal)p.PesoKg;
+            numAltura.Value           = (decimal)p.AlturaCm;
             cmbObjetivo.SelectedIndex = (int)p.Objetivo;
+            cmbActividad.SelectedIndex = (int)p.Actividad;
+            cmbDieta.SelectedIndex    = (int)p.Dieta;
 
             ActualizarResultados(p);
         }
 
-
+        /// <summary>
+        /// Updates the results labels (calories, macros, BMI) based on the given profile.
+        /// </summary>
         private void ActualizarResultados(Perfil p)
         {
             double cal = p.CaloriasRecomendadas();
             double imc = p.IMC();
+            var macros = p.MacrosRecomendados();
 
             lblCalorias.Text = string.Format("Calorias recomendadas: {0:F0} kcal/dia", cal);
             lblIMC.Text      = string.Format("IMC: {0:F1}  ({1})", imc, ClasificarIMC(imc));
+            lblMacros.Text   = string.Format(
+                "Macros ({0}):  Proteinas {1:F0}g  |  Carbohidratos {2:F0}g  |  Grasas {3:F0}g",
+                p.Dieta, macros.Proteinas, macros.Carbohidratos, macros.Grasas);
         }
 
         private string ClasificarIMC(double imc)
@@ -63,15 +69,16 @@ namespace NutricionApp.Views
             return "Obesidad";
         }
 
-        
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             var p = new Perfil(_userName)
             {
-                Edad     = (int)numEdad.Value,
-                PesoKg   = (double)numPeso.Value,
-                AlturaCm = (double)numAltura.Value,
-                Objetivo = (ObjetivoNutricional)cmbObjetivo.SelectedIndex
+                Edad      = (int)numEdad.Value,
+                PesoKg    = (double)numPeso.Value,
+                AlturaCm  = (double)numAltura.Value,
+                Objetivo  = (ObjetivoNutricional)cmbObjetivo.SelectedIndex,
+                Actividad = (NivelActividad)cmbActividad.SelectedIndex,
+                Dieta     = (TipoDieta)cmbDieta.SelectedIndex
             };
 
             _controller.GuardarPerfil(p);
@@ -84,7 +91,6 @@ namespace NutricionApp.Views
                 MessageBoxIcon.Information);
         }
 
-        
         private void btnCerrar_Click(object sender, EventArgs e)
         {
             this.Close();
