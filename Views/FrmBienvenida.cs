@@ -15,12 +15,15 @@ namespace NutricionApp.Views
         private readonly string _userName;
 
         /// <summary>
-        /// Inicializa una nueva instancia de <see cref="FrmBienvenida"/>.
+        /// Initializes a new instance of the FrmBienvenida form, displaying a personalized welcome message and
+        /// configuring controllers for food, menu, and user profile management.
         /// </summary>
-        /// <param name="userName">Nombre del usuario autenticado.</param>
-        /// <param name="alimentoController">Controlador del catalogo de alimentos.</param>
-        /// <param name="menuController">Controlador de menus diarios.</param>
-        /// <param name="perfilController">Controlador del perfil de usuario.</param>
+        /// <remarks>Ensure that all controller parameters are properly instantiated before passing them
+        /// to this constructor. The welcome label will display the provided user name upon initialization.</remarks>
+        /// <param name="userName">The name of the user to be displayed in the welcome message. Cannot be null.</param>
+        /// <param name="alimentoController">An instance of AlimentoController used to manage food-related operations within the form. Cannot be null.</param>
+        /// <param name="menuController">An instance of MenuController that provides menu management functionality for the form. Cannot be null.</param>
+        /// <param name="perfilController">An instance of PerfilController responsible for handling user profile operations. Cannot be null.</param>
         public FrmBienvenida(string userName, AlimentoController alimentoController,
             MenuController menuController, PerfilController perfilController)
         {

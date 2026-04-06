@@ -6,21 +6,28 @@ using NutricionApp.Models;
 namespace NutricionApp.Views
 {
     /// <summary>
-    /// Formulario que muestra los menus diarios del usuario autenticado.
-    /// Permite agregar y eliminar menus.
+    /// Represents a form that allows users to view, create, and delete daily menus associated with their account.
     /// </summary>
+    /// <remarks>This form interacts with the menu and food controllers to manage menu data for the active
+    /// user. Menus are displayed in a DataGridView, and users can add new menus or remove existing ones. The form
+    /// requires a valid username and controller instances to function correctly.</remarks>
     public partial class FrmMenus : Form
     {
         private readonly MenuController    _menuController;
         private readonly AlimentoController _alimentoController;
         private readonly string            _userName;
 
-        /// <summary>
-        /// Inicializa una nueva instancia de <see cref="FrmMenus"/>.
-        /// </summary>
-        /// <param name="userName">Nombre del usuario activo.</param>
-        /// <param name="menuController">Controlador de menus.</param>
-        /// <param name="alimentoController">Controlador de alimentos, necesario para crear menus nuevos.</param>
+       /// <summary>
+       /// Initializes a new instance of the FrmMenus form, allowing menu and food data to be managed and displayed
+       /// according to the specified user and controllers.
+       /// </summary>
+       /// <remarks>This constructor sets up the form's components and loads the menu data using the
+       /// provided controllers. Ensure that both controllers are properly initialized before passing them to this
+       /// constructor.</remarks>
+       /// <param name="userName">The name of the user for whom the menu interface is being customized. This value is used to personalize the
+       /// menu display and interactions.</param>
+       /// <param name="menuController">An instance of MenuController that provides access to menu-related operations and data management.</param>
+       /// <param name="alimentoController">An instance of AlimentoController that supplies food-related data and operations for the form.</param>
         public FrmMenus(string userName, MenuController menuController, AlimentoController alimentoController)
         {
             InitializeComponent();
@@ -30,9 +37,7 @@ namespace NutricionApp.Views
             CargarTabla();
         }
 
-        /// <summary>
-        /// Carga los menus del usuario en el DataGridView.
-        /// </summary>
+        
         private void CargarTabla()
         {
             dgvMenus.Rows.Clear();
@@ -46,9 +51,7 @@ namespace NutricionApp.Views
             }
         }
 
-        /// <summary>
-        /// Abre el formulario para crear un nuevo menu diario.
-        /// </summary>
+       
         private void btnAgregar_Click(object sender, EventArgs e)
         {
             var frm = new FrmCrearMenu(_userName, _menuController, _alimentoController);
@@ -56,9 +59,7 @@ namespace NutricionApp.Views
             frm.ShowDialog();
         }
 
-        /// <summary>
-        /// Elimina el menu seleccionado.
-        /// </summary>
+       
         private void btnEliminar_Click(object sender, EventArgs e)
         {
             if (dgvMenus.SelectedRows.Count == 0)
@@ -84,9 +85,7 @@ namespace NutricionApp.Views
             }
         }
 
-        /// <summary>
-        /// Cierra el formulario.
-        /// </summary>
+       
         private void btnCerrar_Click(object sender, EventArgs e)
         {
             this.Close();

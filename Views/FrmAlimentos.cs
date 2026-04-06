@@ -5,17 +5,24 @@ using NutricionApp.Controllers;
 namespace NutricionApp.Views
 {
     /// <summary>
-    /// Formulario que muestra el catalogo de alimentos disponibles en el sistema.
-    /// Permite consultar, agregar y eliminar alimentos.
+    /// Represents a form for managing food items in the application, allowing users to add, remove, and view
+    /// nutritional information.
     /// </summary>
+    /// <remarks>This form interacts with an instance of <see cref="AlimentoController"/> to retrieve and
+    /// manipulate food data. It initializes the food table upon creation and updates the display after adding or
+    /// removing items.</remarks>
     public partial class FrmAlimentos : Form
     {
         private readonly AlimentoController _controller;
 
         /// <summary>
-        /// Inicializa una nueva instancia de <see cref="FrmAlimentos"/>.
+        /// Initializes a new instance of the FrmAlimentos class using the specified AlimentoController to manage food
+        /// item data.
         /// </summary>
-        /// <param name="controller">Controlador del catalogo de alimentos.</param>
+        /// <remarks>This constructor sets up the form's components and loads the initial data into the
+        /// table using the provided controller.</remarks>
+        /// <param name="controller">The controller responsible for managing and providing access to food item data displayed in the form. Cannot
+        /// be null.</param>
         public FrmAlimentos(AlimentoController controller)
         {
             InitializeComponent();
