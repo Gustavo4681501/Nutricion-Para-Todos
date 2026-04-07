@@ -6,39 +6,31 @@ using NutricionApp.Models;
 namespace NutricionApp.Views
 {
     /// <summary>
-    /// Represents a form that allows users to create and manage a menu by selecting foods, specifying quantities, and
-    /// saving the menu for a given date.
+    /// Form for creating a daily menu. Allows the user to select foods, enter quantities,
+    /// and saves the menu including full macronutrient data (calories, proteins, carbs, fats).
     /// </summary>
-    /// <remarks>This form provides functionality to add or remove food items, calculate total calories, and
-    /// persist the menu using the provided controllers. It is intended for use in applications where users need to
-    /// assemble and store daily menus. The form requires valid controllers for menu and food management to function
-    /// correctly.</remarks>
     public partial class FrmCrearMenu : Form
     {
-        private readonly string             _userName;
-        private readonly MenuController     _menuController;
+        private readonly string _userName;
+        private readonly MenuController _menuController;
         private readonly AlimentoController _alimentoController;
-        private readonly Menu               _menu;
+        private readonly Menu _menu;
 
         /// <summary>
-        /// Initializes a new instance of the FrmCrearMenu form for creating a menu associated with the specified user.
+        /// Initializes a new instance of FrmCrearMenu for the specified user.
         /// </summary>
-        /// <param name="userName">The name of the user for whom the menu is being created. Cannot be null or empty.</param>
-        /// <param name="menuController">The controller used to manage menu-related operations. Cannot be null.</param>
-        /// <param name="alimentoController">The controller used to manage food item operations. Cannot be null.</param>
         public FrmCrearMenu(string userName, MenuController menuController, AlimentoController alimentoController)
         {
             InitializeComponent();
-            _userName           = userName;
-            _menuController     = menuController;
+            _userName = userName;
+            _menuController = menuController;
             _alimentoController = alimentoController;
-            _menu               = new Menu(userName, DateTime.Today);
+            _menu = new Menu(userName, DateTime.Today);
 
             CargarAlimentos();
             dtpFecha.Value = DateTime.Today;
         }
 
-        
         private void CargarAlimentos()
         {
             cmbAlimento.Items.Clear();
@@ -50,7 +42,6 @@ namespace NutricionApp.Views
                 cmbAlimento.SelectedIndex = 0;
         }
 
-       
         private void btnAgregarItem_Click(object sender, EventArgs e)
         {
             if (cmbAlimento.SelectedItem == null)
@@ -73,22 +64,27 @@ namespace NutricionApp.Views
 
             var alimento = (Alimento)cmbAlimento.SelectedItem;
 
-      
-            double calorias = (alimento.Calorias / alimento.Porcion) * gramos;
+            double factor = gramos / alimento.Porcion;
+            double calorias = alimento.Calorias * factor;
+            double proteinas = alimento.Proteinas * factor;
+            double carbohidratos = alimento.Carbohidratos * factor;
+            double grasas = alimento.Grasas * factor;
 
-            var item = new ItemMenu(alimento.Nombre, gramos, calorias);
+            var item = new ItemMenu(alimento.Nombre, gramos, calorias, proteinas, carbohidratos, grasas);
             _menu.Items.Add(item);
 
             dgvItems.Rows.Add(
                 alimento.Nombre,
                 string.Format("{0} g", gramos),
-                string.Format("{0:F1} kcal", calorias));
+                string.Format("{0:F1} kcal", calorias),
+                string.Format("{0:F1}g", proteinas),
+                string.Format("{0:F1}g", carbohidratos),
+                string.Format("{0:F1}g", grasas));
 
             ActualizarTotal();
             txtGramos.Text = "100";
         }
 
-      
         private void btnQuitarItem_Click(object sender, EventArgs e)
         {
             if (dgvItems.SelectedRows.Count == 0)
@@ -100,10 +96,14 @@ namespace NutricionApp.Views
             ActualizarTotal();
         }
 
-       
         private void ActualizarTotal()
         {
-            lblTotal.Text = string.Format("Total: {0:F1} kcal", _menu.TotalCalorias());
+            lblTotal.Text = string.Format(
+                "Total: {0:F1} kcal  |  Prot: {1:F1}g  |  Carb: {2:F1}g  |  Grasas: {3:F1}g",
+                _menu.TotalCalorias(),
+                _menu.TotalProteinas(),
+                _menu.TotalCarbohidratos(),
+                _menu.TotalGrasas());
         }
 
         private void btnGuardar_Click(object sender, EventArgs e)

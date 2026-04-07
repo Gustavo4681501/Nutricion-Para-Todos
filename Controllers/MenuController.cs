@@ -7,36 +7,27 @@ using NutricionApp.Models;
 namespace NutricionApp.Controllers
 {
     /// <summary>
-    /// Provides functionality to manage user menus, including loading, retrieving, adding, and deleting menu entries
-    /// persisted in a CSV file.
+    /// Manages user menus: loading, retrieving, adding, and deleting entries persisted in a CSV file.
+    /// The CSV now stores macronutrients (Proteinas, Carbohidratos, Grasas) per item in addition to calories.
     /// </summary>
-    /// <remarks>The controller loads all menu data from the specified CSV file upon instantiation and
-    /// persists changes automatically when menus are added or removed. This class is not thread-safe. For concurrent
-    /// access, external synchronization is required.</remarks>
     public class MenuController : IMenuController
     {
         private readonly List<Menu> _menus;
         private readonly string _filePath;
 
         /// <summary>
-        /// Initializes a new instance of the MenuController class using the specified file path to load menu data.
+        /// Initializes a new instance of MenuController and loads all menu data from the CSV file.
         /// </summary>
-        /// <remarks>The constructor loads menu data from the provided file path during initialization. If
-        /// the file does not exist or is invalid, subsequent operations may fail.</remarks>
-        /// <param name="filePath">The path to the file containing menu data. Cannot be null or empty.</param>
+        /// <param name="filePath">Path to the menus CSV file. Cannot be null or empty.</param>
         public MenuController(string filePath)
         {
             _filePath = filePath;
-            _menus    = LoadMenus();
+            _menus = LoadMenus();
         }
 
         /// <summary>
-        /// Retrieves a list of menus associated with the specified user, ordered by most recent date first.
+        /// Returns all menus for the specified user, sorted by most recent date first.
         /// </summary>
-        /// <param name="userName">The user name for which to retrieve menus. This value is compared to the user name associated with each
-        /// menu.</param>
-        /// <returns>A list of menus belonging to the specified user, sorted in descending order by date. The list is empty if
-        /// the user has no associated menus.</returns>
         public List<Menu> ObtenerPorUsuario(string userName)
         {
             var resultado = new List<Menu>();
@@ -47,15 +38,13 @@ namespace NutricionApp.Controllers
                     resultado.Add(m);
             }
 
-            
             resultado.Sort((a, b) => b.Fecha.CompareTo(a.Fecha));
             return resultado;
         }
 
         /// <summary>
-        /// Adds the specified menu to the collection and persists the updated list.
+        /// Adds a menu to the collection and persists the change.
         /// </summary>
-        /// <param name="menu">The menu to add to the collection. Cannot be null.</param>
         public void Guardar(Menu menu)
         {
             _menus.Add(menu);
@@ -63,12 +52,8 @@ namespace NutricionApp.Controllers
         }
 
         /// <summary>
-        /// Removes the menu at the specified index for the given user.
+        /// Removes the menu at the given index (within the user's own list) and persists the change.
         /// </summary>
-        /// <remarks>If the specified index is out of range, no action is taken. The removal affects both
-        /// the user's menu list and the global menu collection.</remarks>
-        /// <param name="userName">The name of the user whose menu list is targeted for removal.</param>
-        /// <param name="indice">The zero-based index of the menu to remove from the user's menu list. Must be within the bounds of the list.</param>
         public void Eliminar(string userName, int indice)
         {
             var lista = ObtenerPorUsuario(userName);
@@ -78,7 +63,6 @@ namespace NutricionApp.Controllers
 
             Menu objetivo = lista[indice];
 
-            
             for (int i = 0; i < _menus.Count; i++)
             {
                 if (_menus[i] == objetivo)
@@ -90,6 +74,7 @@ namespace NutricionApp.Controllers
 
             SaveMenus();
         }
+
         private List<Menu> LoadMenus()
         {
             var lista = new List<Menu>();
@@ -108,27 +93,21 @@ namespace NutricionApp.Controllers
                 if (parts.Length < 5)
                     continue;
 
-                string   userName = parts[0].Trim();
+                string userName = parts[0].Trim();
                 DateTime fecha;
                 if (!DateTime.TryParse(parts[1].Trim(), out fecha))
                     continue;
 
                 string nombreAlimento = parts[2].Trim();
+
                 double cantidad, calorias;
+                if (!TryParseDouble(parts[3], out cantidad)) continue;
+                if (!TryParseDouble(parts[4], out calorias)) continue;
 
-                if (!double.TryParse(parts[3].Trim(),
-                    System.Globalization.NumberStyles.Any,
-                    System.Globalization.CultureInfo.InvariantCulture,
-                    out cantidad))
-                    continue;
+                double proteinas = parts.Length > 5 ? ParseDoubleOrZero(parts[5]) : 0;
+                double carbohidratos = parts.Length > 6 ? ParseDoubleOrZero(parts[6]) : 0;
+                double grasas = parts.Length > 7 ? ParseDoubleOrZero(parts[7]) : 0;
 
-                if (!double.TryParse(parts[4].Trim(),
-                    System.Globalization.NumberStyles.Any,
-                    System.Globalization.CultureInfo.InvariantCulture,
-                    out calorias))
-                    continue;
-
-               
                 Menu menu = null;
                 foreach (var m in lista)
                 {
@@ -145,16 +124,15 @@ namespace NutricionApp.Controllers
                     lista.Add(menu);
                 }
 
-                menu.Items.Add(new ItemMenu(nombreAlimento, cantidad, calorias));
+                menu.Items.Add(new ItemMenu(nombreAlimento, cantidad, calorias, proteinas, carbohidratos, grasas));
             }
 
             return lista;
         }
 
-        
         private void SaveMenus()
         {
-            string header = "UserName,Fecha,NombreAlimento,CantidadGramos,Calorias";
+            string header = "UserName,Fecha,NombreAlimento,CantidadGramos,Calorias,Proteinas,Carbohidratos,Grasas";
             var rows = new List<string> { header };
 
             foreach (var menu in _menus)
@@ -163,16 +141,33 @@ namespace NutricionApp.Controllers
                 {
                     rows.Add(string.Format(
                         System.Globalization.CultureInfo.InvariantCulture,
-                        "{0},{1:yyyy-MM-dd},{2},{3},{4}",
+                        "{0},{1:yyyy-MM-dd},{2},{3},{4},{5},{6},{7}",
                         menu.UserName,
                         menu.Fecha,
                         item.NombreAlimento,
                         item.CantidadGramos,
-                        item.Calorias));
+                        item.Calorias,
+                        item.Proteinas,
+                        item.Carbohidratos,
+                        item.Grasas));
                 }
             }
 
             File.WriteAllLines(_filePath, rows);
+        }
+
+        private static bool TryParseDouble(string s, out double result)
+        {
+            return double.TryParse(s.Trim(),
+                System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out result);
+        }
+
+        private static double ParseDoubleOrZero(string s)
+        {
+            double v;
+            return TryParseDouble(s, out v) ? v : 0;
         }
     }
 }
