@@ -1,0 +1,171 @@
+@page "/estadisticas"
+@using NutricionApp.Models
+@inject NutricionApp.AppState AppState
+@inject NutricionApp.Controllers.MenuController MenuCtrl
+@inject NutricionApp.Controllers.PerfilController PerfilCtrl
+@inject NavigationManager Nav
+
+<PageTitle>Estadisticas</PageTitle>
+@if (!AppState.IsLoggedIn) { Nav.NavigateTo("/login"); return; }
+
+<h2 class="mb-4"><i class="bi bi-bar-chart me-2"></i>Estadisticas</h2>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">Resumen de hoy</div>
+            <div class="card-body">
+                @if (_menuHoy != null)
+                {
+                    <div class="row text-center">
+                        <div class="col-3"><div class="fw-bold text-danger fs-5">@_menuHoy.TotalCalorias().ToString("F0")</div><small>kcal</small></div>
+                        <div class="col-3"><div class="fw-bold text-primary fs-5">@_menuHoy.TotalProteinas().ToString("F1")g</div><small>Prot</small></div>
+                        <div class="col-3"><div class="fw-bold text-warning fs-5">@_menuHoy.TotalCarbohidratos().ToString("F1")g</div><small>Carbs</small></div>
+                        <div class="col-3"><div class="fw-bold text-secondary fs-5">@_menuHoy.TotalGrasas().ToString("F1")g</div><small>Grasas</small></div>
+                    </div>
+                    @if (_caloriasRec > 0)
+                    {
+                        double diff = _menuHoy.TotalCalorias() - _caloriasRec;
+                        <hr />
+                        <p class="mb-0 text-center">
+                            Meta: <strong class="text-success">@_caloriasRec.ToString("F0") kcal</strong>
+                            &nbsp;|&nbsp;
+                            Diferencia: <strong class="@(diff > 0 ? "text-danger" : "text-success")">@diff.ToString("F0") kcal</strong>
+                        </p>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Sin registros para hoy.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">Buscar por fecha</div>
+            <div class="card-body">
+                <div class="row g-2 mb-2">
+                    <div class="col-6">
+                        <label class="form-label">Fecha</label>
+                        <input class="form-control" type="date" @bind="_fechaBusqueda" />
+                    </div>
+                    <div class="col-6 d-flex align-items-end">
+                        <button class="btn btn-success w-100" @onclick="BuscarPorFecha">Buscar</button>
+                    </div>
+                </div>
+                @if (_menuBuscado != null)
+                {
+                    <table class="table table-sm mb-0">
+                        <tr><td>Calorias</td><td><strong>@_menuBuscado.TotalCalorias().ToString("F0") kcal</strong></td></tr>
+                        <tr><td>Proteinas</td><td><strong>@_menuBuscado.TotalProteinas().ToString("F1") g</strong></td></tr>
+                        <tr><td>Carbohidratos</td><td><strong>@_menuBuscado.TotalCarbohidratos().ToString("F1") g</strong></td></tr>
+                        <tr><td>Grasas</td><td><strong>@_menuBuscado.TotalGrasas().ToString("F1") g</strong></td></tr>
+                    </table>
+                }
+                else if (_busquedaRealizada)
+                {
+                    <p class="text-muted mb-0">Sin menu para esa fecha.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-info text-white">Resumen mensual</div>
+    <div class="card-body">
+        <div class="row g-2 mb-3">
+            <div class="col-md-3">
+                <label class="form-label">Mes</label>
+                <select class="form-select" @bind="_mes">
+                    @foreach (var mes in _meses)
+                    { <option value="@mes.Key">@mes.Value</option> }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Ano</label>
+                <input class="form-control" type="number" @bind="_ano" />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button class="btn btn-info text-white w-100" @onclick="CalcularMensual">Calcular</button>
+            </div>
+        </div>
+        @if (_resumenMensual.Count > 0)
+        {
+            <table class="table table-sm table-striped">
+                <thead class="table-info">
+                    <tr><th>Fecha</th><th>Calorias</th><th>Proteinas</th><th>Carbs</th><th>Grasas</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var mn in _resumenMensual)
+                    {
+                        <tr>
+                            <td>@mn.Fecha.ToString("dd/MM")</td>
+                            <td>@mn.TotalCalorias().ToString("F0")</td>
+                            <td>@mn.TotalProteinas().ToString("F1")g</td>
+                            <td>@mn.TotalCarbohidratos().ToString("F1")g</td>
+                            <td>@mn.TotalGrasas().ToString("F1")g</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot class="fw-bold">
+                    <tr>
+                        <td>Promedio</td>
+                        <td>@(_resumenMensual.Average(x => x.TotalCalorias()).ToString("F0"))</td>
+                        <td>@(_resumenMensual.Average(x => x.TotalProteinas()).ToString("F1"))g</td>
+                        <td>@(_resumenMensual.Average(x => x.TotalCarbohidratos()).ToString("F1"))g</td>
+                        <td>@(_resumenMensual.Average(x => x.TotalGrasas()).ToString("F1"))g</td>
+                    </tr>
+                </tfoot>
+            </table>
+        }
+    </div>
+</div>
+
+@code {
+    NutricionApp.Models.Menu       _menuHoy          = null;
+    NutricionApp.Models.Menu       _menuBuscado      = null;
+    List<NutricionApp.Models.Menu> _resumenMensual   = new List<NutricionApp.Models.Menu>();
+    double   _caloriasRec      = 0;
+    DateTime _fechaBusqueda    = DateTime.Today;
+    bool     _busquedaRealizada = false;
+    int      _mes = DateTime.Today.Month;
+    int      _ano = DateTime.Today.Year;
+
+    readonly Dictionary<int,string> _meses = new Dictionary<int,string>
+    {
+        {1,"Enero"},{2,"Febrero"},{3,"Marzo"},{4,"Abril"},
+        {5,"Mayo"},{6,"Junio"},{7,"Julio"},{8,"Agosto"},
+        {9,"Septiembre"},{10,"Octubre"},{11,"Noviembre"},{12,"Diciembre"}
+    };
+
+    protected override void OnInitialized()
+    {
+        if (!AppState.IsLoggedIn) return;
+
+        var perfil = PerfilCtrl.ObtenerPerfil(AppState.CurrentUser.UserName);
+        if (perfil != null && perfil.PesoKg > 0)
+            _caloriasRec = perfil.CaloriasRecomendadas();
+
+        var menus = MenuCtrl.ObtenerPorUsuario(AppState.CurrentUser.UserName);
+        _menuHoy = menus.FirstOrDefault(m => m.Fecha.Date == DateTime.Today);
+    }
+
+    void BuscarPorFecha()
+    {
+        var menus = MenuCtrl.ObtenerPorUsuario(AppState.CurrentUser.UserName);
+        _menuBuscado       = menus.FirstOrDefault(m => m.Fecha.Date == _fechaBusqueda.Date);
+        _busquedaRealizada = true;
+    }
+
+    void CalcularMensual()
+    {
+        var menus = MenuCtrl.ObtenerPorUsuario(AppState.CurrentUser.UserName);
+        _resumenMensual = menus
+            .Where(m => m.Fecha.Month == _mes && m.Fecha.Year == _ano)
+            .OrderBy(m => m.Fecha)
+            .ToList();
+    }
+}

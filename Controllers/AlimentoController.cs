@@ -1,109 +1,95 @@
 using System.Collections.Generic;
-using System.IO;
+using Microsoft.Data.Sqlite;
 using NutricionApp.Controllers.Abstractions;
+using NutricionApp.Data;
 using NutricionApp.Models;
 
 namespace NutricionApp.Controllers
 {
     /// <summary>
-    /// Provides operations to manage a catalog of food items, including loading from and persisting to a CSV file.
+    /// Gestiona el catalogo de alimentos usando SQLite.
+    /// Iteracion 2: reemplaza la lectura/escritura de CSV.
+    /// Implementa IAlimentoController sin cambios en la interfaz.
     /// </summary>
-    /// <remarks>The controller is initialized with the path to a CSV file containing food data. All
-    /// modifications to the catalog, such as adding or removing items, are immediately saved to the specified file.
-    /// This class is not thread-safe; concurrent access should be managed externally if used in multi-threaded
-    /// scenarios.</remarks>
     public class AlimentoController : IAlimentoController
     {
-        private readonly List<Alimento> _alimentos;
-        private readonly string _filePath;
+        private readonly DatabaseContext _db;
 
-        /// <summary>
-        /// Initializes a new instance of the AlimentoController class using the specified file path to load alimento
-        /// data.
-        /// </summary>
-        /// <remarks>The constructor loads alimento data from the specified file path when the controller
-        /// is created. Ensure that the file exists and is accessible to avoid initialization errors.</remarks>
-        /// <param name="filePath">The path to the file containing the alimento data. This parameter cannot be null or empty.</param>
-        public AlimentoController(string filePath)
-        {
-            _filePath  = filePath;
-            _alimentos = LoadAlimentos();
-        }
+        public AlimentoController(DatabaseContext db) { _db = db; }
 
-        /// <summary>
-        /// Retrieves a list of all available food items.
-        /// </summary>
-        /// <returns>A list of <see cref="Alimento"/> objects representing all food items. The list will be empty if no food
-        /// items are available.</returns>
+        /// <summary>Retorna todos los alimentos ordenados por nombre.</summary>
         public List<Alimento> ObtenerTodos()
         {
-            return _alimentos;
+            var list = new List<Alimento>();
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT Nombre,Calorias,Proteinas,Carbohidratos,Grasas,Porcion FROM Alimentos ORDER BY Nombre;";
+            using var r = cmd.ExecuteReader();
+            while (r.Read())
+                list.Add(new Alimento(r.GetString(0), r.GetDouble(1), r.GetDouble(2), r.GetDouble(3), r.GetDouble(4), r.GetDouble(5)));
+            return list;
         }
 
-        /// <summary>
-        /// Adds a food item to the collection and saves the updated list to persistent storage.
-        /// </summary>
-        /// <remarks>This method updates the internal list of food items and immediately persists the
-        /// changes. If the same food item is added multiple times, it will appear multiple times in the
-        /// collection.</remarks>
-        /// <param name="alimento">The food item to add to the collection. Cannot be null.</param>
-        public void Agregar(Alimento alimento)
+        /// <summary>Retorna un alimento por nombre exacto, o null si no existe.</summary>
+        public Alimento ObtenerPorNombre(string nombre)
         {
-            _alimentos.Add(alimento);
-            SaveAlimentos();
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT Nombre,Calorias,Proteinas,Carbohidratos,Grasas,Porcion FROM Alimentos WHERE Nombre=@n;";
+            cmd.Parameters.AddWithValue("@n", nombre);
+            using var r = cmd.ExecuteReader();
+            if (!r.Read()) return null;
+            return new Alimento(r.GetString(0), r.GetDouble(1), r.GetDouble(2), r.GetDouble(3), r.GetDouble(4), r.GetDouble(5));
         }
 
-        /// <summary>
-        /// Removes the item at the specified index from the collection of alimentos.
-        /// </summary>
-        /// <remarks>This method updates the underlying collection and persists the changes. If the index
-        /// is out of range, the method does nothing.</remarks>
-        /// <param name="indice">The zero-based index of the item to remove. Must be within the range of the collection; otherwise, no action
-        /// is taken.</param>
+        /// <summary>Agrega un alimento nuevo al catalogo.</summary>
+        public void Agregar(Alimento a)
+        {
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "INSERT INTO Alimentos(Nombre,Calorias,Proteinas,Carbohidratos,Grasas,Porcion) VALUES(@n,@cal,@prot,@carb,@gras,@porc);";
+            Bind(cmd, a);
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>Actualiza los valores nutricionales de un alimento existente.</summary>
+        public void Actualizar(Alimento a)
+        {
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "UPDATE Alimentos SET Calorias=@cal,Proteinas=@prot,Carbohidratos=@carb,Grasas=@gras,Porcion=@porc WHERE Nombre=@n;";
+            Bind(cmd, a);
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>Elimina un alimento por su Id (compatible con IAlimentoController).</summary>
         public void Eliminar(int indice)
         {
-            if (indice >= 0 && indice < _alimentos.Count)
-            {
-                _alimentos.RemoveAt(indice);
-                SaveAlimentos();
-            }
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "DELETE FROM Alimentos WHERE Id=@id;";
+            cmd.Parameters.AddWithValue("@id", indice);
+            cmd.ExecuteNonQuery();
         }
 
- 
-        private List<Alimento> LoadAlimentos()
+        /// <summary>Elimina un alimento por nombre.</summary>
+        public void EliminarPorNombre(string nombre)
         {
-            var lista = new List<Alimento>();
-
-            if (!File.Exists(_filePath))
-                return lista;
-
-            var lines = File.ReadAllLines(_filePath);
-
-            for (int i = 1; i < lines.Length; i++)
-            {
-                var parts = lines[i].Split(',');
-                if (parts.Length >= 6)
-                    lista.Add(new Alimento(parts));
-            }
-
-            return lista;
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "DELETE FROM Alimentos WHERE Nombre=@n;";
+            cmd.Parameters.AddWithValue("@n", nombre);
+            cmd.ExecuteNonQuery();
         }
 
-     
-        private void SaveAlimentos()
+        private static void Bind(SqliteCommand cmd, Alimento a)
         {
-            var lines = File.Exists(_filePath)
-                ? File.ReadAllLines(_filePath)
-                : new string[0];
-
-            string header = lines.Length > 0 ? lines[0] : "Nombre,Calorias,Proteinas,Carbohidratos,Grasas,Porcion";
-
-            var rows = new List<string> { header };
-
-            foreach (var a in _alimentos)
-                rows.Add(a.ToCsv());
-
-            File.WriteAllLines(_filePath, rows);
+            cmd.Parameters.AddWithValue("@n",    a.Nombre);
+            cmd.Parameters.AddWithValue("@cal",  a.Calorias);
+            cmd.Parameters.AddWithValue("@prot", a.Proteinas);
+            cmd.Parameters.AddWithValue("@carb", a.Carbohidratos);
+            cmd.Parameters.AddWithValue("@gras", a.Grasas);
+            cmd.Parameters.AddWithValue("@porc", a.Porcion);
         }
     }
 }

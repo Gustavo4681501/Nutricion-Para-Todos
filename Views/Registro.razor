@@ -1,0 +1,63 @@
+@page "/registro"
+@using NutricionApp.Models
+@inject NutricionApp.Controllers.LoginController LoginCtrl
+@inject NavigationManager Nav
+
+<PageTitle>Registro</PageTitle>
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white text-center py-3">
+                <h5 class="mb-0"><i class="bi bi-person-plus me-2"></i>Crear Cuenta</h5>
+            </div>
+            <div class="card-body p-4">
+                @if (_success)
+                {
+                    <div class="alert alert-success">
+                        Cuenta creada. <a href="/login">Iniciar sesion</a>
+                    </div>
+                }
+                else
+                {
+                    @if (!string.IsNullOrEmpty(_error))
+                    {
+                        <div class="alert alert-danger">@_error</div>
+                    }
+                    <div class="mb-3">
+                        <label class="form-label">Usuario</label>
+                        <input class="form-control" @bind="_userName" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contrasena</label>
+                        <input class="form-control" type="password" @bind="_password" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Confirmar contrasena</label>
+                        <input class="form-control" type="password" @bind="_confirm" />
+                    </div>
+                    <button class="btn btn-success w-100 mb-2" @onclick="DoRegister">Registrarse</button>
+                    <a href="/login" class="btn btn-outline-secondary w-100">Cancelar</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    string _userName = string.Empty;
+    string _password = string.Empty;
+    string _confirm  = string.Empty;
+    string _error    = string.Empty;
+    bool   _success  = false;
+
+    void DoRegister()
+    {
+        _error = string.Empty;
+        if (string.IsNullOrWhiteSpace(_userName)) { _error = "Usuario requerido."; return; }
+        if (_password.Length < 3)                 { _error = "Contrasena muy corta."; return; }
+        if (_password != _confirm)                { _error = "Las contrasenas no coinciden."; return; }
+        if (!LoginCtrl.Register(_userName.Trim(), _password)) { _error = "El usuario ya existe."; return; }
+        _success = true;
+    }
+}
