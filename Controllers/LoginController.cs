@@ -1,126 +1,113 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
+using Microsoft.Data.Sqlite;
 using NutricionApp.Controllers.Abstractions;
+using NutricionApp.Data;
 using NutricionApp.Models;
 
 namespace NutricionApp.Controllers
 {
     /// <summary>
-    /// Provides methods for authenticating users and registering new accounts, managing user data stored in a CSV file.
+    /// Autentica y registra usuarios usando SQLite.
+    /// Iteracion 2: reemplaza la lectura/escritura de CSV.
+    /// Implementa ILoginController sin cambios en la interfaz.
     /// </summary>
-    /// <remarks>The controller loads user information from the specified CSV file upon initialization and
-    /// persists changes when new users are registered. Usernames must be unique; attempts to register an existing
-    /// username will fail. This class is not thread-safe.</remarks>
     public class LoginController : ILoginController
     {
-        private readonly List<User> _users;
-        private readonly string _filePath;
+        private readonly DatabaseContext _db;
 
-        /// <summary>
-        /// Initializes a new instance of the LoginController class using the specified file path for user data storage
-        /// and retrieval.
-        /// </summary>
-        /// <remarks>The constructor loads user information from the specified file upon initialization.
-        /// Ensure that the file exists and is accessible to prevent exceptions during loading.</remarks>
-        /// <param name="filePath">The path to the file containing user data. This parameter cannot be null or empty.</param>
-        public LoginController(string filePath)
-        {
-            _filePath = filePath;
-            _users    = LoadUsers();
-        }
+        public LoginController(DatabaseContext db) { _db = db; }
 
-        /// <summary>
-        /// Validates the specified user credentials against the registered users and indicates whether authentication
-        /// is successful.
-        /// </summary>
-        /// <remarks>This method performs a direct comparison of the provided credentials with those
-        /// stored in the user collection. It does not implement security measures such as password hashing or account
-        /// lockout. Use only in trusted or demonstration scenarios.</remarks>
-        /// <param name="userName">The user name of the account to authenticate. This value cannot be null or empty.</param>
-        /// <param name="password">The password associated with the specified user name. This value cannot be null or empty.</param>
-        /// <returns>true if the credentials match a registered user; otherwise, false.</returns>
+        /// <summary>Valida credenciales contra la base de datos.</summary>
         public bool Login(string userName, string password)
         {
-            foreach (var user in _users)
-            {
-                if (user.UserName == userName && user.Password == password)
-                    return true;
-            }
-
-            return false;
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT COUNT(*) FROM Usuarios WHERE UserName=@u AND Password=@p AND IsActive=1;";
+            cmd.Parameters.AddWithValue("@u", userName);
+            cmd.Parameters.AddWithValue("@p", password);
+            return (long)cmd.ExecuteScalar()! > 0;
         }
 
-        /// <summary>
-        /// Registers a new user with the specified username and password if the username does not already exist.
-        /// </summary>
-        /// <remarks>This method checks for existing users to ensure that each username is unique. User
-        /// data is persisted after successful registration.</remarks>
-        /// <param name="userName">The username for the new user. Must be unique and cannot be null or empty.</param>
-        /// <param name="password">The password for the new user. Cannot be null.</param>
-        /// <returns>true if the registration is successful; otherwise, false if the username already exists.</returns>
+        /// <summary>Registra un nuevo usuario si el nombre no existe.</summary>
         public bool Register(string userName, string password)
         {
-            foreach (var user in _users)
-            {
-                if (user.UserName == userName)
-                    return false;
-            }
+            using var conn = _db.OpenConnection();
+            var chk = conn.CreateCommand();
+            chk.CommandText = "SELECT COUNT(*) FROM Usuarios WHERE UserName=@u;";
+            chk.Parameters.AddWithValue("@u", userName);
+            if ((long)chk.ExecuteScalar()! > 0) return false;
 
-            _users.Add(new User(userName, password));
-            SaveUsers();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "INSERT INTO Usuarios(UserName,Password,IsAdmin,IsActive) VALUES(@u,@p,0,1);";
+            cmd.Parameters.AddWithValue("@u", userName);
+            cmd.Parameters.AddWithValue("@p", password);
+            cmd.ExecuteNonQuery();
             return true;
         }
 
+        /// <summary>Retorna el objeto User completo con IsAdmin e IsActive.</summary>
+        public User GetUser(string userName)
+        {
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT UserName,Password,IsAdmin,IsActive FROM Usuarios WHERE UserName=@u;";
+            cmd.Parameters.AddWithValue("@u", userName);
+            using var r = cmd.ExecuteReader();
+            if (!r.Read()) return null;
+            return new User(r.GetString(0), r.GetString(1))
+            {
+                IsAdmin  = r.GetInt32(2) == 1,
+                IsActive = r.GetInt32(3) == 1
+            };
+        }
 
-        /// <summary>
-        /// Loads a collection of users from the configured file path.
-        /// </summary>
-        /// <remarks>The method expects the file to be in CSV format, with the first line containing
-        /// headers and each subsequent line representing a user. Only lines with at least two comma-separated values
-        /// are processed. Ensure the file format matches the expected structure to avoid errors when creating User
-        /// objects.</remarks>
-        /// <returns>A list of User objects parsed from the file. Returns an empty list if the file does not exist or contains no
-        /// user data.</returns>
-        private List<User> LoadUsers()
+        /// <summary>Retorna todos los usuarios (uso del administrador).</summary>
+        public List<User> GetAll()
         {
             var list = new List<User>();
-
-            if (!File.Exists(_filePath))
-                return list;
-
-            var lines = File.ReadAllLines(_filePath);
-
-            for (int i = 1; i < lines.Length; i++)
-            {
-                var parts = lines[i].Split(',');
-                if (parts.Length >= 2)
-                    list.Add(new User(parts));
-            }
-
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT UserName,Password,IsAdmin,IsActive FROM Usuarios ORDER BY UserName;";
+            using var r = cmd.ExecuteReader();
+            while (r.Read())
+                list.Add(new User(r.GetString(0), r.GetString(1))
+                {
+                    IsAdmin  = r.GetInt32(2) == 1,
+                    IsActive = r.GetInt32(3) == 1
+                });
             return list;
         }
 
-        /// <summary>
-        /// Saves the current list of users to a CSV file, preserving the header row.
-        /// </summary>
-        /// <remarks>If the specified file already exists, the method reads its contents to maintain the
-        /// existing header. If the file does not exist, a default header of 'UserName,Password' is used. The method
-        /// writes each user's username and password as a new row in the CSV file.</remarks>
-        private void SaveUsers()
+        /// <summary>Resetea la contrasena de un usuario.</summary>
+        public void ResetPassword(string userName, string newPassword)
         {
-            var lines = File.Exists(_filePath)
-                ? File.ReadAllLines(_filePath)
-                : new string[0];
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "UPDATE Usuarios SET Password=@p WHERE UserName=@u;";
+            cmd.Parameters.AddWithValue("@p", newPassword);
+            cmd.Parameters.AddWithValue("@u", userName);
+            cmd.ExecuteNonQuery();
+        }
 
-            string header = lines.Length > 0 ? lines[0] : "UserName,Password";
+        /// <summary>Activa o desactiva una cuenta de usuario.</summary>
+        public void SetActive(string userName, bool active)
+        {
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "UPDATE Usuarios SET IsActive=@a WHERE UserName=@u;";
+            cmd.Parameters.AddWithValue("@a", active ? 1 : 0);
+            cmd.Parameters.AddWithValue("@u", userName);
+            cmd.ExecuteNonQuery();
+        }
 
-            var rows = new List<string> { header };
-
-            foreach (var user in _users)
-                rows.Add(string.Format("{0},{1}", user.UserName, user.Password));
-
-            File.WriteAllLines(_filePath, rows);
+        /// <summary>Elimina permanentemente un usuario.</summary>
+        public void EliminarUsuario(string userName)
+        {
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "DELETE FROM Usuarios WHERE UserName=@u;";
+            cmd.Parameters.AddWithValue("@u", userName);
+            cmd.ExecuteNonQuery();
         }
     }
 }

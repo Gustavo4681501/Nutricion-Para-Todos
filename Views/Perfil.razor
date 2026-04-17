@@ -1,0 +1,127 @@
+@page "/perfil"
+@using NutricionApp.Models
+@inject NutricionApp.AppState AppState
+@inject NutricionApp.Controllers.PerfilController PerfilCtrl
+@inject NavigationManager Nav
+
+<PageTitle>Mi Perfil</PageTitle>
+@if (!AppState.IsLoggedIn) { Nav.NavigateTo("/login"); return; }
+
+<h2 class="mb-4"><i class="bi bi-person-gear me-2"></i>Mi Perfil Nutricional</h2>
+
+@if (_guardado)
+{
+    <div class="alert alert-success alert-dismissible">
+        Perfil guardado correctamente.
+        <button type="button" class="btn-close" @onclick="LimpiarMensaje"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Edad</label>
+                    <input class="form-control" type="number" @bind="_edad" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Peso (kg)</label>
+                    <input class="form-control" type="number" step="0.1" @bind="_pesoKg" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Altura (cm)</label>
+                    <input class="form-control" type="number" step="0.1" @bind="_alturaCm" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Objetivo</label>
+                    <select class="form-select" @bind="_objetivo">
+                        @foreach (ObjetivoNutricional o in Enum.GetValues(typeof(ObjetivoNutricional)))
+                        { <option value="@o">@o</option> }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nivel de actividad</label>
+                    <select class="form-select" @bind="_actividad">
+                        @foreach (NivelActividad a in Enum.GetValues(typeof(NivelActividad)))
+                        { <option value="@a">@a</option> }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tipo de dieta</label>
+                    <select class="form-select" @bind="_dieta">
+                        @foreach (TipoDieta d in Enum.GetValues(typeof(TipoDieta)))
+                        { <option value="@d">@d</option> }
+                    </select>
+                </div>
+                <button class="btn btn-success w-100" @onclick="Guardar">
+                    <i class="bi bi-floppy me-1"></i>Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    @if (_pesoKg > 0 && _alturaCm > 0)
+    {
+        <div class="col-md-6 mt-3 mt-md-0">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">Estadisticas calculadas</div>
+                <div class="card-body">
+                    @{ var p = BuildPerfil(); }
+                    <table class="table table-sm">
+                        <tr><td>IMC</td><td><strong>@p.IMC().ToString("F2")</strong></td></tr>
+                        <tr><td>Calorias recomendadas</td><td><strong class="text-success">@p.CaloriasRecomendadas().ToString("F0") kcal</strong></td></tr>
+                        @{ var mac = p.MacrosRecomendados(); }
+                        <tr><td>Proteinas</td><td><strong>@mac.Proteinas.ToString("F0") g</strong></td></tr>
+                        <tr><td>Carbohidratos</td><td><strong>@mac.Carbohidratos.ToString("F0") g</strong></td></tr>
+                        <tr><td>Grasas</td><td><strong>@mac.Grasas.ToString("F0") g</strong></td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    // Campos individuales para evitar conflictos de namespace con Perfil
+    int                  _edad     = 25;
+    double               _pesoKg   = 0;
+    double               _alturaCm = 0;
+    ObjetivoNutricional  _objetivo  = ObjetivoNutricional.Mantener;
+    NivelActividad       _actividad = NivelActividad.Moderado;
+    TipoDieta            _dieta     = TipoDieta.Estandar;
+    bool                 _guardado  = false;
+
+    protected override void OnInitialized()
+    {
+        if (!AppState.IsLoggedIn) return;
+        var p = PerfilCtrl.ObtenerPerfil(AppState.CurrentUser.UserName);
+        _edad     = p.Edad;
+        _pesoKg   = p.PesoKg;
+        _alturaCm = p.AlturaCm;
+        _objetivo  = p.Objetivo;
+        _actividad = p.Actividad;
+        _dieta     = p.Dieta;
+    }
+
+    NutricionApp.Models.Perfil BuildPerfil()
+    {
+        return new NutricionApp.Models.Perfil(AppState.CurrentUser.UserName)
+        {
+            Edad     = _edad,
+            PesoKg   = _pesoKg,
+            AlturaCm = _alturaCm,
+            Objetivo  = _objetivo,
+            Actividad = _actividad,
+            Dieta     = _dieta
+        };
+    }
+
+    void Guardar()
+    {
+        PerfilCtrl.GuardarPerfil(BuildPerfil());
+        _guardado = true;
+    }
+
+    void LimpiarMensaje() => _guardado = false;
+}

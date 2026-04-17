@@ -1,56 +1,44 @@
-using System;
-using System.IO;
-using System.Windows.Forms;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using NutricionApp.Controllers;
-using NutricionApp.Views;
+using NutricionApp.Data;
 
-namespace NutricionApp
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+
+// Base de datos SQLite — reemplaza los CSV de la iteracion 1
+builder.Services.AddSingleton<DatabaseContext>();
+
+// Estado de sesion por circuito Blazor
+builder.Services.AddScoped<NutricionApp.AppState>();
+
+// Controladores del proyecto 1 — mismas interfaces, ahora con SQLite
+builder.Services.AddScoped<LoginController>();
+builder.Services.AddScoped<AlimentoController>();
+builder.Services.AddScoped<MenuController>();
+builder.Services.AddScoped<PerfilController>();
+
+var app = builder.Build();
+
+// Inicializar BD al arrancar (crea tablas y siembra datos si esta vacia)
+using (var scope = app.Services.CreateScope())
 {
-    internal static class Program
-    {
-        /// <summary>
-        /// Serves as the main entry point for the application, initializing the user interface and ensuring required
-        /// data files are present before launching the login form.
-        /// </summary>
-        /// <remarks>This method creates the necessary data directory and CSV files if they do not already
-        /// exist. It also initializes controllers for user authentication, food items, menus, and user profiles, and
-        /// then starts the application's login form. The method must be marked with the [STAThread] attribute to
-        /// support Windows Forms functionality.</remarks>
-        [STAThread]
-        static void Main()
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
-            string csvDir = Path.GetFullPath(Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "Data", "CSV"));
-
-            Directory.CreateDirectory(csvDir);
-
-            string usuariosPath = Path.Combine(csvDir, "usuarios.csv");
-            string alimentosPath = Path.Combine(csvDir, "alimentos.csv");
-            string menusPath = Path.Combine(csvDir, "menus.csv");
-            string perfilesPath = Path.Combine(csvDir, "perfiles.csv");
-
-            if (!File.Exists(usuariosPath))
-                File.WriteAllText(usuariosPath, "UserName,Password\n");
-
-            if (!File.Exists(alimentosPath))
-                File.WriteAllText(alimentosPath, "Nombre,Calorias,Proteinas,Carbohidratos,Grasas,Porcion\n");
-
-            if (!File.Exists(menusPath))
-                File.WriteAllText(menusPath, "UserName,Fecha,NombreAlimento,CantidadGramos,Calorias\n");
-
-            if (!File.Exists(perfilesPath))
-                File.WriteAllText(perfilesPath, "UserName,Edad,PesoKg,AlturaCm,Objetivo\n");
-
-            var loginController = new LoginController(usuariosPath);
-            var alimentoController = new AlimentoController(alimentosPath);
-            var menuController = new MenuController(menusPath);
-            var perfilController = new PerfilController(perfilesPath);
-
-            Application.Run(new FrmLogin(loginController, alimentoController,
-                menuController, perfilController));
-        }
-    }
+    var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+    db.Initialize();
 }
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.MapBlazorHub();
+app.MapFallbackToPage("/_Host");
+app.Run();

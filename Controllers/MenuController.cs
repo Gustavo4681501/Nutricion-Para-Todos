@@ -1,173 +1,121 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
+using Microsoft.Data.Sqlite;
 using NutricionApp.Controllers.Abstractions;
+using NutricionApp.Data;
 using NutricionApp.Models;
 
 namespace NutricionApp.Controllers
 {
     /// <summary>
-    /// Manages user menus: loading, retrieving, adding, and deleting entries persisted in a CSV file.
-    /// The CSV now stores macronutrients (Proteinas, Carbohidratos, Grasas) per item in addition to calories.
+    /// Gestiona menus diarios usando SQLite.
+    /// Iteracion 2: reemplaza la lectura/escritura de CSV.
+    /// Implementa IMenuController sin cambios en la interfaz.
     /// </summary>
     public class MenuController : IMenuController
     {
-        private readonly List<Menu> _menus;
-        private readonly string _filePath;
+        private readonly DatabaseContext _db;
 
-        /// <summary>
-        /// Initializes a new instance of MenuController and loads all menu data from the CSV file.
-        /// </summary>
-        /// <param name="filePath">Path to the menus CSV file. Cannot be null or empty.</param>
-        public MenuController(string filePath)
-        {
-            _filePath = filePath;
-            _menus = LoadMenus();
-        }
+        public MenuController(DatabaseContext db) { _db = db; }
 
-        /// <summary>
-        /// Returns all menus for the specified user, sorted by most recent date first.
-        /// </summary>
+        /// <summary>Retorna todos los menus de un usuario, ordenados por fecha descendente.</summary>
         public List<Menu> ObtenerPorUsuario(string userName)
         {
-            var resultado = new List<Menu>();
-
-            foreach (var m in _menus)
+            var menus = new List<Menu>();
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT Id,UserName,Fecha FROM Menus WHERE UserName=@u ORDER BY Fecha DESC;";
+            cmd.Parameters.AddWithValue("@u", userName);
+            using var r = cmd.ExecuteReader();
+            while (r.Read())
             {
-                if (m.UserName == userName)
-                    resultado.Add(m);
+                var m = new Menu(r.GetString(1), DateTime.Parse(r.GetString(2)));
+                m.Items = GetItems(conn, r.GetInt32(0));
+                menus.Add(m);
             }
-
-            resultado.Sort((a, b) => b.Fecha.CompareTo(a.Fecha));
-            return resultado;
+            return menus;
         }
 
-        /// <summary>
-        /// Adds a menu to the collection and persists the change.
-        /// </summary>
+        /// <summary>Guarda un menu y todos sus items.</summary>
         public void Guardar(Menu menu)
         {
-            _menus.Add(menu);
-            SaveMenus();
-        }
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "INSERT INTO Menus(UserName,Fecha) VALUES(@u,@f); SELECT last_insert_rowid();";
+            cmd.Parameters.AddWithValue("@u", menu.UserName);
+            cmd.Parameters.AddWithValue("@f", menu.Fecha.ToString("yyyy-MM-dd"));
+            int menuId = (int)(long)cmd.ExecuteScalar()!;
 
-        /// <summary>
-        /// Removes the menu at the given index (within the user's own list) and persists the change.
-        /// </summary>
-        public void Eliminar(string userName, int indice)
-        {
-            var lista = ObtenerPorUsuario(userName);
-
-            if (indice < 0 || indice >= lista.Count)
-                return;
-
-            Menu objetivo = lista[indice];
-
-            for (int i = 0; i < _menus.Count; i++)
+            foreach (var item in menu.Items)
             {
-                if (_menus[i] == objetivo)
-                {
-                    _menus.RemoveAt(i);
-                    break;
-                }
+                var ic = conn.CreateCommand();
+                ic.CommandText = "INSERT INTO ItemsMenu(MenuId,NombreAlimento,CantidadGramos,Calorias,Proteinas,Carbohidratos,Grasas) VALUES(@mid,@n,@cant,@cal,@prot,@carb,@gras);";
+                ic.Parameters.AddWithValue("@mid",  menuId);
+                ic.Parameters.AddWithValue("@n",    item.NombreAlimento);
+                ic.Parameters.AddWithValue("@cant", item.CantidadGramos);
+                ic.Parameters.AddWithValue("@cal",  item.Calorias);
+                ic.Parameters.AddWithValue("@prot", item.Proteinas);
+                ic.Parameters.AddWithValue("@carb", item.Carbohidratos);
+                ic.Parameters.AddWithValue("@gras", item.Grasas);
+                ic.ExecuteNonQuery();
             }
-
-            SaveMenus();
         }
 
-        private List<Menu> LoadMenus()
+        /// <summary>Elimina un menu por su Id.</summary>
+        public void Eliminar(string userName, int menuId)
         {
-            var lista = new List<Menu>();
+            using var conn = _db.OpenConnection();
+            var d1 = conn.CreateCommand();
+            d1.CommandText = "DELETE FROM ItemsMenu WHERE MenuId=@id;";
+            d1.Parameters.AddWithValue("@id", menuId);
+            d1.ExecuteNonQuery();
 
-            if (!File.Exists(_filePath))
-                return lista;
-
-            var lines = File.ReadAllLines(_filePath);
-
-            for (int i = 1; i < lines.Length; i++)
-            {
-                if (string.IsNullOrWhiteSpace(lines[i]))
-                    continue;
-
-                var parts = lines[i].Split(',');
-                if (parts.Length < 5)
-                    continue;
-
-                string userName = parts[0].Trim();
-                DateTime fecha;
-                if (!DateTime.TryParse(parts[1].Trim(), out fecha))
-                    continue;
-
-                string nombreAlimento = parts[2].Trim();
-
-                double cantidad, calorias;
-                if (!TryParseDouble(parts[3], out cantidad)) continue;
-                if (!TryParseDouble(parts[4], out calorias)) continue;
-
-                double proteinas = parts.Length > 5 ? ParseDoubleOrZero(parts[5]) : 0;
-                double carbohidratos = parts.Length > 6 ? ParseDoubleOrZero(parts[6]) : 0;
-                double grasas = parts.Length > 7 ? ParseDoubleOrZero(parts[7]) : 0;
-
-                Menu menu = null;
-                foreach (var m in lista)
-                {
-                    if (m.UserName == userName && m.Fecha.Date == fecha.Date)
-                    {
-                        menu = m;
-                        break;
-                    }
-                }
-
-                if (menu == null)
-                {
-                    menu = new Menu(userName, fecha);
-                    lista.Add(menu);
-                }
-
-                menu.Items.Add(new ItemMenu(nombreAlimento, cantidad, calorias, proteinas, carbohidratos, grasas));
-            }
-
-            return lista;
+            var d2 = conn.CreateCommand();
+            d2.CommandText = "DELETE FROM Menus WHERE Id=@id AND UserName=@u;";
+            d2.Parameters.AddWithValue("@id", menuId);
+            d2.Parameters.AddWithValue("@u",  userName);
+            d2.ExecuteNonQuery();
         }
 
-        private void SaveMenus()
+        /// <summary>Retorna el alimento mas consumido en un rango de fechas.</summary>
+        public string AlimentoMasConsumido(DateTime desde, DateTime hasta)
         {
-            string header = "UserName,Fecha,NombreAlimento,CantidadGramos,Calorias,Proteinas,Carbohidratos,Grasas";
-            var rows = new List<string> { header };
-
-            foreach (var menu in _menus)
-            {
-                foreach (var item in menu.Items)
-                {
-                    rows.Add(string.Format(
-                        System.Globalization.CultureInfo.InvariantCulture,
-                        "{0},{1:yyyy-MM-dd},{2},{3},{4},{5},{6},{7}",
-                        menu.UserName,
-                        menu.Fecha,
-                        item.NombreAlimento,
-                        item.CantidadGramos,
-                        item.Calorias,
-                        item.Proteinas,
-                        item.Carbohidratos,
-                        item.Grasas));
-                }
-            }
-
-            File.WriteAllLines(_filePath, rows);
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
+                SELECT im.NombreAlimento, SUM(im.CantidadGramos) AS Total
+                FROM ItemsMenu im JOIN Menus m ON im.MenuId=m.Id
+                WHERE m.Fecha BETWEEN @f AND @t
+                GROUP BY im.NombreAlimento ORDER BY Total DESC LIMIT 1;";
+            cmd.Parameters.AddWithValue("@f", desde.ToString("yyyy-MM-dd"));
+            cmd.Parameters.AddWithValue("@t", hasta.ToString("yyyy-MM-dd"));
+            using var r = cmd.ExecuteReader();
+            return r.Read() ? r.GetString(0) : "Sin datos";
         }
 
-        private static bool TryParseDouble(string s, out double result)
+        /// <summary>Retorna los usuarios con mas menus registrados.</summary>
+        public List<(string UserName, int Count)> TopUsuariosPorMenus(int top = 5)
         {
-            return double.TryParse(s.Trim(),
-                System.Globalization.NumberStyles.Any,
-                System.Globalization.CultureInfo.InvariantCulture,
-                out result);
+            var list = new List<(string, int)>();
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT UserName,COUNT(*) FROM Menus GROUP BY UserName ORDER BY COUNT(*) DESC LIMIT @t;";
+            cmd.Parameters.AddWithValue("@t", top);
+            using var r = cmd.ExecuteReader();
+            while (r.Read()) list.Add((r.GetString(0), r.GetInt32(1)));
+            return list;
         }
 
-        private static double ParseDoubleOrZero(string s)
+        private static List<ItemMenu> GetItems(SqliteConnection conn, int menuId)
         {
-            double v;
-            return TryParseDouble(s, out v) ? v : 0;
+            var items = new List<ItemMenu>();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT NombreAlimento,CantidadGramos,Calorias,Proteinas,Carbohidratos,Grasas FROM ItemsMenu WHERE MenuId=@mid;";
+            cmd.Parameters.AddWithValue("@mid", menuId);
+            using var r = cmd.ExecuteReader();
+            while (r.Read())
+                items.Add(new ItemMenu(r.GetString(0), r.GetDouble(1), r.GetDouble(2), r.GetDouble(3), r.GetDouble(4), r.GetDouble(5)));
+            return items;
         }
     }
 }
