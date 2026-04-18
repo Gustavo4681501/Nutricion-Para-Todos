@@ -1,0 +1,273 @@
+@page "/admin"
+@using NutricionApp.Models
+@using System.Linq
+@inject NutricionApp.AppState AppState
+@inject NutricionApp.Controllers.UserManagementController UserMgmt
+@inject NutricionApp.Controllers.MenuController MenuCtrl
+@inject NutricionApp.Controllers.PerfilController PerfilCtrl
+@inject NavigationManager Nav
+
+<PageTitle>Administracion</PageTitle>
+
+@if (!AppState.IsLoggedIn || !AppState.IsAdmin)
+{
+    Nav.NavigateTo("/dashboard");
+    return;
+}
+
+<h2 class="mb-4"><i class="bi bi-shield-lock me-2"></i>Panel de Administracion</h2>
+
+@if (!string.IsNullOrEmpty(_mensaje))
+{
+    <div class="alert alert-success alert-dismissible">
+        @_mensaje
+        <button type="button" class="btn-close" @onclick="LimpiarMensaje"></button>
+    </div>
+}
+
+<!-- Tarjetas de resumen -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card text-center p-3 border-info">
+            <h3 class="text-info">@_usuarios.Count</h3>
+            <p class="mb-0">Usuarios registrados</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center p-3 border-success">
+            <h3 class="text-success">@_usuarios.Count(u => u.IsActive)</h3>
+            <p class="mb-0">Usuarios activos</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center p-3 border-warning">
+            <h5 class="text-warning fw-bold mt-2">@_topAlimento</h5>
+            <p class="mb-0 text-muted">Alimento mas consumido (30 dias)</p>
+        </div>
+    </div>
+</div>
+
+<!-- Estadisticas -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-success text-white">
+                <i class="bi bi-pie-chart me-1"></i>Distribucion de dietas
+            </div>
+            <div class="card-body">
+                @foreach (var (dieta, count) in _dietStats)
+                {
+                    double pct = _usuarios.Count > 0 ? (count * 100.0 / _usuarios.Count) : 0;
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span>@dieta</span>
+                            <span>@count usuarios (@pct.ToString("F0")%)</span>
+                        </div>
+                        <div class="progress" style="height:12px">
+                            <div class="progress-bar bg-success" style="width:@pct.ToString("F0")%"></div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-info text-white">
+                <i class="bi bi-trophy me-1"></i>Top usuarios con mas menus
+            </div>
+            <div class="card-body">
+                @if (_topMenuUsers.Count > 0)
+                {
+                    <ol class="mb-0">
+                        @foreach (var (user, count) in _topMenuUsers)
+                        {
+                            <li class="mb-1">
+                                <strong>@user</strong>
+                                <span class="badge bg-info ms-2">@count menu(s)</span>
+                            </li>
+                        }
+                    </ol>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">Sin datos de menus aun.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alimento mas consumido por rango de fechas -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        <i class="bi bi-search me-1"></i>Alimento mas consumido por rango de fechas
+    </div>
+    <div class="card-body">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">Desde</label>
+                <input class="form-control" type="date" @bind="_rangoDesde" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Hasta</label>
+                <input class="form-control" type="date" @bind="_rangoHasta" />
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100" @onclick="BuscarAlimentoTop">
+                    <i class="bi bi-search me-1"></i>Buscar
+                </button>
+            </div>
+            @if (!string.IsNullOrEmpty(_alimentoRango))
+            {
+                <div class="col-md-4">
+                    <div class="alert alert-primary mb-0">
+                        <i class="bi bi-star-fill me-1"></i>
+                        <strong>@_alimentoRango</strong>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Gestion de usuarios -->
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+        <i class="bi bi-people me-1"></i>Gestion de Usuarios
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in _usuarios)
+                    {
+                        <tr class="@(!u.IsActive ? "table-secondary" : "")">
+                            <td>
+                                <i class="bi bi-person-circle me-1 text-muted"></i>
+                                @u.UserName
+                            </td>
+                            <td>
+                                @if (u.IsAdmin)
+                                {
+                                    <span class="badge bg-danger">Admin</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Usuario</span>
+                                }
+                            </td>
+                            <td>
+                                @if (u.IsActive)
+                                {
+                                    <span class="badge bg-success">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Inactivo</span>
+                                }
+                            </td>
+                            <td>
+                                @if (u.UserName != AppState.CurrentUser.UserName)
+                                {
+                                    <button class="btn btn-sm btn-outline-warning me-1"
+                                            title="Reset contrasena a '1234'"
+                                            @onclick="() => ResetPassword(u.UserName)">
+                                        <i class="bi bi-key"></i>
+                                    </button>
+                                    @if (u.IsActive)
+                                    {
+                                        <button class="btn btn-sm btn-outline-secondary me-1"
+                                                title="Desactivar usuario"
+                                                @onclick="() => ToggleActivo(u.UserName, false)">
+                                            <i class="bi bi-person-dash"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-sm btn-outline-success me-1"
+                                                title="Activar usuario"
+                                                @onclick="() => ToggleActivo(u.UserName, true)">
+                                            <i class="bi bi-person-check"></i>
+                                        </button>
+                                    }
+                                    <button class="btn btn-sm btn-outline-danger"
+                                            title="Eliminar usuario"
+                                            @onclick="() => Eliminar(u.UserName)">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">— cuenta actual —</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    List<User>                         _usuarios     = new List<User>();
+    List<(TipoDieta Dieta, int Count)> _dietStats    = new List<(TipoDieta, int)>();
+    List<(string UserName, int Count)> _topMenuUsers = new List<(string, int)>();
+    string   _topAlimento   = "Sin datos";
+    string   _alimentoRango = string.Empty;
+    string   _mensaje       = string.Empty;
+    DateTime _rangoDesde    = DateTime.Today.AddDays(-30);
+    DateTime _rangoHasta    = DateTime.Today;
+
+    protected override void OnInitialized()
+    {
+        if (!AppState.IsAdmin) return;
+        Cargar();
+    }
+
+    void Cargar()
+    {
+        _usuarios     = UserMgmt.GetAll();
+        _dietStats    = PerfilCtrl.DistribucionDietas();
+        _topMenuUsers = MenuCtrl.TopUsuariosPorMenus(5);
+        _topAlimento  = MenuCtrl.AlimentoMasConsumido(
+                            DateTime.Today.AddDays(-30), DateTime.Today);
+    }
+
+    void BuscarAlimentoTop()
+    {
+        _alimentoRango = MenuCtrl.AlimentoMasConsumido(_rangoDesde, _rangoHasta);
+    }
+
+    void ResetPassword(string userName)
+    {
+        UserMgmt.ResetPassword(userName, "1234");
+        _mensaje = $"Contrasena de '{userName}' reseteada a '1234'.";
+        Cargar();
+    }
+
+    void ToggleActivo(string userName, bool activo)
+    {
+        UserMgmt.SetActive(userName, activo);
+        _mensaje = $"Usuario '{userName}' {(activo ? "activado" : "desactivado")}.";
+        Cargar();
+    }
+
+    void Eliminar(string userName)
+    {
+        UserMgmt.EliminarUsuario(userName);
+        _mensaje = $"Usuario '{userName}' eliminado.";
+        Cargar();
+    }
+
+    void LimpiarMensaje() => _mensaje = string.Empty;
+}

@@ -15,15 +15,18 @@ builder.Services.AddSingleton<DatabaseContext>();
 // Estado de sesion por circuito Blazor
 builder.Services.AddScoped<NutricionApp.AppState>();
 
-// Controladores del proyecto 1 — mismas interfaces, ahora con SQLite
+// Controladores — cada uno con responsabilidad unica (SOLID-S)
 builder.Services.AddScoped<LoginController>();
 builder.Services.AddScoped<AlimentoController>();
 builder.Services.AddScoped<MenuController>();
 builder.Services.AddScoped<PerfilController>();
 
+// Iteracion 2: controller de gestion administrativa de usuarios
+builder.Services.AddScoped<UserManagementController>();
+
 var app = builder.Build();
 
-// Inicializar BD al arrancar (crea tablas y siembra datos si esta vacia)
+// Inicializar BD al arrancar
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
