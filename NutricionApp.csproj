@@ -8,6 +8,14 @@
     <AssemblyName>NutricionApp</AssemblyName>
   </PropertyGroup>
 
+  <!-- Excluir la carpeta de tests del proyecto principal -->
+  <ItemGroup>
+    <Compile Remove="NutricionApp.Tests\**" />
+    <Content Remove="NutricionApp.Tests\**" />
+    <EmbeddedResource Remove="NutricionApp.Tests\**" />
+    <None Remove="NutricionApp.Tests\**" />
+  </ItemGroup>
+
   <!-- Iteracion 2: SQLite reemplaza CSV -->
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />

@@ -13,11 +13,23 @@ namespace NutricionApp.Data
     {
         private readonly string _connectionString;
 
+        /// <summary>
+        /// Constructor de produccion: usa un archivo .db en disco.
+        /// </summary>
         public DatabaseContext()
         {
             var dbPath = Path.Combine(AppContext.BaseDirectory, "Data", "nutricion.db");
             Directory.CreateDirectory(Path.GetDirectoryName(dbPath)!);
             _connectionString = $"Data Source={dbPath}";
+        }
+
+        /// <summary>
+        /// Constructor para testing: acepta una cadena de conexion personalizada.
+        /// Permite usar SQLite en memoria para pruebas unitarias aisladas.
+        /// </summary>
+        public DatabaseContext(string connectionString)
+        {
+            _connectionString = connectionString;
         }
 
         /// <summary>Abre una conexion SQLite. El llamador debe hacer Dispose.</summary>
@@ -118,7 +130,7 @@ namespace NutricionApp.Data
             }
 
             // Perfiles originales del CSV
-            var perfiles = new (string u,int e,double pk,double ac,string obj,string act,string d)[]
+            var perfiles = new (string u, int e, double pk, double ac, string obj, string act, string d)[]
             {
                 ("Randy",38,55,181,"Mantener","Sedentario","Estandar"),
                 ("Joely",25,60,180.8,"PerderPeso","Ligero","Keto"),
@@ -152,15 +164,15 @@ namespace NutricionApp.Data
             {
                 var c = conn.CreateCommand();
                 c.CommandText = "INSERT OR IGNORE INTO Perfiles(UserName,Edad,PesoKg,AlturaCm,Objetivo,Actividad,Dieta) VALUES(@u,@e,@pk,@ac,@obj,@act,@d);";
-                c.Parameters.AddWithValue("@u",p.u);  c.Parameters.AddWithValue("@e",p.e);
-                c.Parameters.AddWithValue("@pk",p.pk);c.Parameters.AddWithValue("@ac",p.ac);
-                c.Parameters.AddWithValue("@obj",p.obj);c.Parameters.AddWithValue("@act",p.act);
-                c.Parameters.AddWithValue("@d",p.d);
+                c.Parameters.AddWithValue("@u", p.u);   c.Parameters.AddWithValue("@e", p.e);
+                c.Parameters.AddWithValue("@pk", p.pk); c.Parameters.AddWithValue("@ac", p.ac);
+                c.Parameters.AddWithValue("@obj", p.obj); c.Parameters.AddWithValue("@act", p.act);
+                c.Parameters.AddWithValue("@d", p.d);
                 c.ExecuteNonQuery();
             }
 
             // Alimentos originales del CSV
-            var alimentos = new (string n,double cal,double prot,double carb,double gras,double porc)[]
+            var alimentos = new (string n, double cal, double prot, double carb, double gras, double porc)[]
             {
                 ("Arroz blanco cocido",130,2.7,28.2,0.3,100),
                 ("Arroz integral cocido",111,2.6,23.0,0.9,100),
@@ -197,9 +209,9 @@ namespace NutricionApp.Data
             {
                 var c = conn.CreateCommand();
                 c.CommandText = "INSERT OR IGNORE INTO Alimentos(Nombre,Calorias,Proteinas,Carbohidratos,Grasas,Porcion) VALUES(@n,@cal,@prot,@carb,@gras,@porc);";
-                c.Parameters.AddWithValue("@n",a.n);   c.Parameters.AddWithValue("@cal",a.cal);
-                c.Parameters.AddWithValue("@prot",a.prot);c.Parameters.AddWithValue("@carb",a.carb);
-                c.Parameters.AddWithValue("@gras",a.gras);c.Parameters.AddWithValue("@porc",a.porc);
+                c.Parameters.AddWithValue("@n", a.n);     c.Parameters.AddWithValue("@cal", a.cal);
+                c.Parameters.AddWithValue("@prot", a.prot); c.Parameters.AddWithValue("@carb", a.carb);
+                c.Parameters.AddWithValue("@gras", a.gras); c.Parameters.AddWithValue("@porc", a.porc);
                 c.ExecuteNonQuery();
             }
         }
