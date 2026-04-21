@@ -1,8 +1,10 @@
 namespace NutricionApp.Controllers.Abstractions
 {
     /// <summary>
-    /// Define el contrato para las operaciones de autenticacion y registro de usuarios.
+    /// Provides a contract for user authentication and registration operations.
     /// </summary>
+    /// <remarks>Implementations of this interface should ensure secure handling of user credentials and
+    /// enforce appropriate validation and security standards for login and registration processes.</remarks>
     public interface ILoginController
     {
         /// <summary>

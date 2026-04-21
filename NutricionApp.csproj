@@ -1,79 +1,24 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<OutputType>WinExe</OutputType>
-		<TargetFramework>net8.0-windows</TargetFramework>
-		<Nullable>disable</Nullable>
-		<UseWindowsForms>true</UseWindowsForms>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<AssemblyName>NutricionApp</AssemblyName>
-		<RootNamespace>NutricionApp</RootNamespace>
-		<StartupObject>NutricionApp.Program</StartupObject>
-	</PropertyGroup>
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
-	<ItemGroup>
-		<Content Include="Data\CSV\usuarios.csv">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Data\CSV\alimentos.csv">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Data\CSV\menus.csv">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-		<Content Include="Data\CSV\perfiles.csv">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <RootNamespace>NutricionApp</RootNamespace>
+    <AssemblyName>NutricionApp</AssemblyName>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<Compile Update="Views\FrmLogin.cs">
-			<SubType>Form</SubType>
-		</Compile>
-		<Compile Update="Views\FrmLogin.Designer.cs">
-			<DependentUpon>FrmLogin.cs</DependentUpon>
-		</Compile>
-		<Compile Update="Views\FrmRegistro.cs">
-			<SubType>Form</SubType>
-		</Compile>
-		<Compile Update="Views\FrmRegistro.Designer.cs">
-			<DependentUpon>FrmRegistro.cs</DependentUpon>
-		</Compile>
-		<Compile Update="Views\FrmBienvenida.cs">
-			<SubType>Form</SubType>
-		</Compile>
-		<Compile Update="Views\FrmBienvenida.Designer.cs">
-			<DependentUpon>FrmBienvenida.cs</DependentUpon>
-		</Compile>
-		<Compile Update="Views\FrmAlimentos.cs">
-			<SubType>Form</SubType>
-		</Compile>
-		<Compile Update="Views\FrmAlimentos.Designer.cs">
-			<DependentUpon>FrmAlimentos.cs</DependentUpon>
-		</Compile>
-		<Compile Update="Views\FrmAgregarAlimento.cs">
-			<SubType>Form</SubType>
-		</Compile>
-		<Compile Update="Views\FrmAgregarAlimento.Designer.cs">
-			<DependentUpon>FrmAgregarAlimento.cs</DependentUpon>
-		</Compile>
-		<Compile Update="Views\FrmMenus.cs">
-			<SubType>Form</SubType>
-		</Compile>
-		<Compile Update="Views\FrmMenus.Designer.cs">
-			<DependentUpon>FrmMenus.cs</DependentUpon>
-		</Compile>
-		<Compile Update="Views\FrmCrearMenu.cs">
-			<SubType>Form</SubType>
-		</Compile>
-		<Compile Update="Views\FrmCrearMenu.Designer.cs">
-			<DependentUpon>FrmCrearMenu.cs</DependentUpon>
-		</Compile>
-		<Compile Update="Views\FrmPerfil.cs">
-			<SubType>Form</SubType>
-		</Compile>
-		<Compile Update="Views\FrmPerfil.Designer.cs">
-			<DependentUpon>FrmPerfil.cs</DependentUpon>
-		</Compile>
-	</ItemGroup>
+  <!-- Excluir la carpeta de tests del proyecto principal -->
+  <ItemGroup>
+    <Compile Remove="NutricionApp.Tests\**" />
+    <Content Remove="NutricionApp.Tests\**" />
+    <EmbeddedResource Remove="NutricionApp.Tests\**" />
+    <None Remove="NutricionApp.Tests\**" />
+  </ItemGroup>
+
+  <!-- Iteracion 2: SQLite reemplaza CSV -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
+  </ItemGroup>
 
 </Project>

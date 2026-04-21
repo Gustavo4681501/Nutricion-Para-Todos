@@ -1,11 +1,62 @@
 Nombre,Calorias,Proteinas,Carbohidratos,Grasas,Porcion
 Arroz blanco cocido,130,2.7,28.2,0.3,100
+Arroz integral cocido,111,2.6,23.0,0.9,100
 Pan integral,247,13.0,41.0,3.4,100
+Pan blanco,265,9.0,49.0,3.2,100
+Avena en hojuelas,389,17.0,66.0,7.0,100
+Pasta cocida,131,5.0,25.0,1.1,100
+Quinoa cocida,120,4.4,21.3,1.9,100
+Tortilla de maiz,218,5.7,45.9,2.5,100
+Papa cocida,86,1.7,20.0,0.1,100
+Camote cocido,90,2.0,20.7,0.1,100
+Maiz cocido,96,3.4,21.0,1.5,100
+Granola,471,10.6,64.0,20.0,100
 Pechuga de pollo,165,31.0,0.0,3.6,100
+Muslo de pollo,209,26.0,0.0,11.0,100
 Huevo entero,155,13.0,1.1,11.0,100
+Clara de huevo,52,11.0,0.7,0.2,100
+Atun en agua,116,26.0,0.0,1.0,100
+Salmon,208,20.0,0.0,13.0,100
+Tilapia,96,20.1,0.0,2.0,100
+Carne molida magra,215,26.0,0.0,12.0,100
+Bistec de res,271,26.0,0.0,18.0,100
+Cerdo lomo,242,27.0,0.0,14.0,100
+Camaron cocido,99,24.0,0.0,0.3,100
+Sardina en aceite,208,24.6,0.0,11.5,100
 Leche entera,61,3.2,4.8,3.3,100
+Leche descremada,34,3.4,5.0,0.1,100
+Yogur natural,59,3.5,3.6,3.3,100
+Yogur griego,97,9.0,3.6,5.0,100
+Queso cheddar,402,25.0,1.3,33.0,100
+Queso cottage,98,11.0,3.4,4.3,100
+Queso mozzarella,280,28.0,2.2,17.0,100
 Manzana,52,0.3,14.0,0.2,100
 Banano,89,1.1,23.0,0.3,100
+Naranja,47,0.9,12.0,0.1,100
+Fresa,32,0.7,7.7,0.3,100
+Mango,60,0.8,15.0,0.4,100
+Pina,50,0.5,13.0,0.1,100
+Sandia,30,0.6,7.6,0.2,100
+Uvas,69,0.7,18.0,0.2,100
+Papaya,43,0.5,11.0,0.3,100
+Melon,34,0.8,8.2,0.2,100
 Brocoli,34,2.8,6.6,0.4,100
-Atun en agua,116,26.0,0.0,1.0,100
-Avena en hojuelas,389,17.0,66.0,7.0,100
+Zanahoria,41,0.9,10.0,0.2,100
+Espinaca,23,2.9,3.6,0.4,100
+Tomate,18,0.9,3.9,0.2,100
+Pepino,16,0.7,3.6,0.1,100
+Lechuga romana,17,1.2,3.3,0.3,100
+Cebolla,40,1.1,9.3,0.1,100
+Pimiento rojo,31,1.0,6.0,0.3,100
+Aguacate,160,2.0,9.0,15.0,100
+Champiñon,22,3.1,3.3,0.3,100
+Frijoles negros cocidos,132,8.9,23.7,0.5,100
+Lentejas cocidas,116,9.0,20.0,0.4,100
+Garbanzos cocidos,164,8.9,27.0,2.6,100
+Almendras,579,21.0,22.0,50.0,100
+Mani tostado,587,25.0,21.0,50.0,100
+Nuez,654,15.0,14.0,65.0,100
+Aceite de oliva,884,0.0,0.0,100.0,100
+Mantequilla,717,0.9,0.1,81.0,100
+Miel,304,0.3,82.0,0.0,100
+Mayonesa,680,1.0,0.6,75.0,100

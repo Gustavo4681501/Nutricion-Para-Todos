@@ -1,105 +1,91 @@
+using System;
 using System.Collections.Generic;
-using System.IO;
+using Microsoft.Data.Sqlite;
 using NutricionApp.Controllers.Abstractions;
+using NutricionApp.Data;
 using NutricionApp.Models;
 
 namespace NutricionApp.Controllers
 {
     /// <summary>
-    /// Manages user profiles, allowing retrieval and persistence of profile data from a CSV file.
+    /// Gestiona perfiles nutricionales usando SQLite.
+    /// Iteracion 2: reemplaza la lectura/escritura de CSV.
+    /// Implementa IPerfilController sin cambios en la interfaz.
     /// </summary>
-    /// <remarks>The controller loads all profiles from the specified CSV file upon initialization. If a
-    /// requested user does not have a saved profile, a default profile is returned. Profile updates and additions are
-    /// persisted to the CSV file, ensuring data consistency across application sessions.</remarks>
     public class PerfilController : IPerfilController
     {
-        private readonly List<Perfil> _perfiles;
-        private readonly string       _filePath;
+        private readonly DatabaseContext _db;
 
-        /// <summary>
-        /// Initializes a new instance of the PerfilController class using the specified file path to load profile data.
-        /// </summary>
-        /// <remarks>The constructor loads profiles from the provided file path when the controller is
-        /// instantiated. Ensure that the file exists and is accessible to avoid runtime errors.</remarks>
-        /// <param name="filePath">The path to the file that contains the profile data. This parameter cannot be null or empty.</param>
-        public PerfilController(string filePath)
-        {
-            _filePath = filePath;
-            _perfiles = LoadPerfiles();
-        }
+        public PerfilController(DatabaseContext db) { _db = db; }
 
-        /// <summary>
-        /// Retrieves the profile associated with the specified username, or creates a new profile if none exists.
-        /// </summary>
-        /// <remarks>This method searches through the existing profiles to find a match. If no match is
-        /// found, it initializes a new Perfil with the provided username.</remarks>
-        /// <param name="userName">The username for which to retrieve the profile. This parameter cannot be null or empty.</param>
-        /// <returns>A Perfil object representing the user's profile. If a profile with the specified username exists, it is
-        /// returned; otherwise, a new Perfil is created.</returns>
+        /// <summary>Obtiene el perfil de un usuario, o uno por defecto si no existe.</summary>
         public Perfil ObtenerPerfil(string userName)
         {
-            foreach (var p in _perfiles)
-            {
-                if (p.UserName == userName)
-                    return p;
-            }
-
-            return new Perfil(userName);
-        }
-        
-        /// <summary>
-        /// Saves the specified user profile, replacing any existing profile for the same user.
-        /// </summary>
-        /// <remarks>If a profile with the same user name already exists, it is replaced with the new
-        /// profile. Changes are persisted immediately after the operation.</remarks>
-        /// <param name="perfil">The profile to save. Must contain a valid user name and associated settings.</param>
-        public void GuardarPerfil(Perfil perfil)
-        {
-            for (int i = 0; i < _perfiles.Count; i++)
-            {
-                if (_perfiles[i].UserName == perfil.UserName)
-                {
-                    _perfiles[i] = perfil;
-                    SavePerfiles();
-                    return;
-                }
-            }
-
-            _perfiles.Add(perfil);
-            SavePerfiles();
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT UserName,Edad,PesoKg,AlturaCm,Objetivo,Actividad,Dieta FROM Perfiles WHERE UserName=@u;";
+            cmd.Parameters.AddWithValue("@u", userName);
+            using var r = cmd.ExecuteReader();
+            if (!r.Read()) return new Perfil(userName);
+            return Map(r);
         }
 
-        private List<Perfil> LoadPerfiles()
+        /// <summary>Guarda o actualiza el perfil del usuario.</summary>
+        public void GuardarPerfil(Perfil p)
         {
-            var lista = new List<Perfil>();
+            using var conn = _db.OpenConnection();
+            var chk = conn.CreateCommand();
+            chk.CommandText = "SELECT COUNT(*) FROM Perfiles WHERE UserName=@u;";
+            chk.Parameters.AddWithValue("@u", p.UserName);
+            bool exists = (long)chk.ExecuteScalar()! > 0;
 
-            if (!File.Exists(_filePath))
-                return lista;
-
-            var lines = File.ReadAllLines(_filePath);
-
-            for (int i = 1; i < lines.Length; i++)
-            {
-                if (string.IsNullOrWhiteSpace(lines[i]))
-                    continue;
-
-                var parts = lines[i].Split(',');
-                if (parts.Length >= 5)
-                    lista.Add(new Perfil(parts));
-            }
-
-            return lista;
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = exists
+                ? "UPDATE Perfiles SET Edad=@e,PesoKg=@pk,AlturaCm=@ac,Objetivo=@obj,Actividad=@act,Dieta=@d WHERE UserName=@u;"
+                : "INSERT INTO Perfiles(UserName,Edad,PesoKg,AlturaCm,Objetivo,Actividad,Dieta) VALUES(@u,@e,@pk,@ac,@obj,@act,@d);";
+            Bind(cmd, p);
+            cmd.ExecuteNonQuery();
         }
 
-        private void SavePerfiles()
+        /// <summary>Retorna la distribucion de tipos de dieta (uso del administrador).</summary>
+        public List<(TipoDieta Dieta, int Count)> DistribucionDietas()
         {
-            string header = "UserName,Edad,PesoKg,AlturaCm,Objetivo";
-            var rows = new List<string> { header };
+            var list = new List<(TipoDieta, int)>();
+            using var conn = _db.OpenConnection();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT Dieta, COUNT(*) FROM Perfiles GROUP BY Dieta;";
+            using var r = cmd.ExecuteReader();
+            while (r.Read())
+                if (Enum.TryParse<TipoDieta>(r.GetString(0), out var d))
+                    list.Add((d, r.GetInt32(1)));
+            return list;
+        }
 
-            foreach (var p in _perfiles)
-                rows.Add(p.ToCsv());
+        private static Perfil Map(SqliteDataReader r)
+        {
+            Enum.TryParse<ObjetivoNutricional>(r.GetString(4), out var obj);
+            Enum.TryParse<NivelActividad>(r.GetString(5),      out var act);
+            Enum.TryParse<TipoDieta>(r.GetString(6),           out var diet);
+            return new Perfil(r.GetString(0))
+            {
+                Edad     = r.GetInt32(1),
+                PesoKg   = r.GetDouble(2),
+                AlturaCm = r.GetDouble(3),
+                Objetivo = obj,
+                Actividad = act,
+                Dieta    = diet
+            };
+        }
 
-            File.WriteAllLines(_filePath, rows);
+        private static void Bind(SqliteCommand cmd, Perfil p)
+        {
+            cmd.Parameters.AddWithValue("@u",   p.UserName);
+            cmd.Parameters.AddWithValue("@e",   p.Edad);
+            cmd.Parameters.AddWithValue("@pk",  p.PesoKg);
+            cmd.Parameters.AddWithValue("@ac",  p.AlturaCm);
+            cmd.Parameters.AddWithValue("@obj", p.Objetivo.ToString());
+            cmd.Parameters.AddWithValue("@act", p.Actividad.ToString());
+            cmd.Parameters.AddWithValue("@d",   p.Dieta.ToString());
         }
     }
 }

@@ -1,0 +1,192 @@
+@page "/menus"
+@using NutricionApp.Models
+@using System.Linq
+@using System.Text
+@inject NutricionApp.Controllers.MenuController MenuCtrl
+@inject NutricionApp.Controllers.AlimentoController AlimentoCtrl
+@inject NutricionApp.AppState AppState
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+<PageTitle>Mis Menus</PageTitle>
+@if (!AppState.IsLoggedIn) { Nav.NavigateTo("/login"); return; }
+
+<h2 class="mb-3"><i class="bi bi-journal-text me-2"></i>Mis Menus</h2>
+
+<div class="card mb-4 border-success shadow-sm">
+    <div class="card-header bg-success text-white">Registrar menu del dia</div>
+    <div class="card-body">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">Fecha</label>
+                <input class="form-control" type="date" @bind="_fecha" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Alimento</label>
+                <select class="form-select" @bind="_alimentoSel">
+                    <option value="">-- Seleccionar --</option>
+                    @foreach (var a in _alimentos)
+                    {
+                        <option value="@a.Nombre">@a.Nombre</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Cantidad (g)</label>
+                <input class="form-control" type="number" @bind="_cantidad" min="1" />
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline-success w-100" @onclick="AgregarItem">
+                    <i class="bi bi-plus"></i> Agregar
+                </button>
+            </div>
+        </div>
+
+        @if (_itemsNuevos.Count > 0)
+        {
+            <table class="table table-sm mt-3">
+                <thead>
+                    <tr><th>Alimento</th><th>Cantidad</th><th>kcal</th><th></th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var it in _itemsNuevos)
+                    {
+                        <tr>
+                            <td>@it.NombreAlimento</td>
+                            <td>@it.CantidadGramos g</td>
+                            <td>@it.Calorias.ToString("F0")</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-danger"
+                                        @onclick="() => _itemsNuevos.Remove(it)">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr class="fw-bold">
+                        <td colspan="2">Total</td>
+                        <td>@_itemsNuevos.Sum(i => i.Calorias).ToString("F0") kcal</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <button class="btn btn-success" @onclick="GuardarMenu">
+                <i class="bi bi-floppy me-1"></i>Guardar menu
+            </button>
+        }
+
+        @if (!string.IsNullOrEmpty(_mensaje))
+        {
+            <div class="alert alert-success mt-2">@_mensaje</div>
+        }
+    </div>
+</div>
+
+<h5 class="mb-3">Historial de menus</h5>
+
+@if (_menus.Count == 0)
+{
+    <p class="text-muted">Sin menus registrados.</p>
+}
+
+@foreach (var menu in _menus)
+{
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-calendar3 me-1"></i>@menu.Fecha.ToString("dd/MM/yyyy")</span>
+            <div>
+                <button class="btn btn-sm btn-outline-success me-1" @onclick="() => DescargarCSV(menu)">
+                    <i class="bi bi-download me-1"></i>CSV
+                </button>
+                <button class="btn btn-sm btn-outline-danger" @onclick="() => EliminarMenu(menu)">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row text-center mb-2">
+                <div class="col-3"><span class="badge bg-danger">@menu.TotalCalorias().ToString("F0") kcal</span></div>
+                <div class="col-3"><span class="badge bg-primary">P: @menu.TotalProteinas().ToString("F1")g</span></div>
+                <div class="col-3"><span class="badge bg-warning text-dark">C: @menu.TotalCarbohidratos().ToString("F1")g</span></div>
+                <div class="col-3"><span class="badge bg-secondary">G: @menu.TotalGrasas().ToString("F1")g</span></div>
+            </div>
+            <ul class="list-group list-group-flush">
+                @foreach (var it in menu.Items)
+                {
+                    <li class="list-group-item d-flex justify-content-between py-1">
+                        <span>@it.NombreAlimento</span>
+                        <span class="text-muted">@it.CantidadGramos g — @it.Calorias.ToString("F0") kcal</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+
+@code {
+    List<Menu>     _menus       = new List<Menu>();
+    List<Alimento> _alimentos   = new List<Alimento>();
+    List<ItemMenu> _itemsNuevos = new List<ItemMenu>();
+    DateTime _fecha       = DateTime.Today;
+    string   _alimentoSel = string.Empty;
+    double   _cantidad    = 100;
+    string   _mensaje     = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        _alimentos = AlimentoCtrl.ObtenerTodos();
+        _menus     = MenuCtrl.ObtenerPorUsuario(AppState.CurrentUser.UserName);
+    }
+
+    void AgregarItem()
+    {
+        if (string.IsNullOrEmpty(_alimentoSel)) return;
+        var a = AlimentoCtrl.ObtenerPorNombre(_alimentoSel);
+        if (a == null) return;
+        double f = _cantidad / a.Porcion;
+        _itemsNuevos.Add(new ItemMenu(a.Nombre, _cantidad,
+            a.Calorias * f, a.Proteinas * f, a.Carbohidratos * f, a.Grasas * f));
+        _alimentoSel = string.Empty;
+        _cantidad    = 100;
+    }
+
+    void GuardarMenu()
+    {
+        if (_itemsNuevos.Count == 0) return;
+        var menu = new Menu(AppState.CurrentUser.UserName, _fecha);
+        menu.Items = new List<ItemMenu>(_itemsNuevos);
+        MenuCtrl.Guardar(menu);
+        _itemsNuevos.Clear();
+        _menus   = MenuCtrl.ObtenerPorUsuario(AppState.CurrentUser.UserName);
+        _mensaje = "Menu guardado correctamente.";
+    }
+
+    /// <summary>
+    /// Elimina el menu usando su Id de base de datos — no el indice de la lista.
+    /// Fix: el bug anterior pasaba el indice de la lista en lugar del Id del registro.
+    /// </summary>
+    void EliminarMenu(Menu menu)
+    {
+        MenuCtrl.Eliminar(AppState.CurrentUser.UserName, menu.Id);
+        _menus = MenuCtrl.ObtenerPorUsuario(AppState.CurrentUser.UserName);
+    }
+
+    /// <summary>
+    /// Genera el CSV del menu y lo descarga usando un enlace temporal.
+    /// Fix: usa URL de datos directamente en lugar de eval() para mayor compatibilidad.
+    /// </summary>
+    async Task DescargarCSV(Menu m)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("Fecha,Alimento,Cantidad(g),Calorias,Proteinas,Carbohidratos,Grasas");
+        foreach (var it in m.Items)
+            sb.AppendLine($"{m.Fecha:yyyy-MM-dd},{it.NombreAlimento},{it.CantidadGramos},{it.Calorias:F1},{it.Proteinas:F1},{it.Carbohidratos:F1},{it.Grasas:F1}");
+
+        var b64   = Convert.ToBase64String(Encoding.UTF8.GetBytes(sb.ToString()));
+        var fname = $"menu_{m.Fecha:yyyyMMdd}.csv";
+        await JS.InvokeVoidAsync("eval",
+            $"(function(){{var a=document.createElement('a');a.href='data:text/csv;base64,{b64}';a.download='{fname}';document.body.appendChild(a);a.click();document.body.removeChild(a);}})();");
+    }
+}

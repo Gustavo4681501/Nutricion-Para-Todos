@@ -1,44 +1,47 @@
-using System;
-using System.IO;
-using System.Windows.Forms;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using NutricionApp.Controllers;
-using NutricionApp.Views;
+using NutricionApp.Data;
 
-namespace NutricionApp
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+
+// Base de datos SQLite — reemplaza los CSV de la iteracion 1
+builder.Services.AddSingleton<DatabaseContext>();
+
+// Estado de sesion por circuito Blazor
+builder.Services.AddScoped<NutricionApp.AppState>();
+
+// Controladores — cada uno con responsabilidad unica (SOLID-S)
+builder.Services.AddScoped<LoginController>();
+builder.Services.AddScoped<AlimentoController>();
+builder.Services.AddScoped<MenuController>();
+builder.Services.AddScoped<PerfilController>();
+
+// Iteracion 2: controller de gestion administrativa de usuarios
+builder.Services.AddScoped<UserManagementController>();
+
+var app = builder.Build();
+
+// Inicializar BD al arrancar
+using (var scope = app.Services.CreateScope())
 {
-    internal static class Program
-    {
-        
-        [STAThread]
-        static void Main()
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
-            string csvDir = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory, "Data", "CSV");
-
-            Directory.CreateDirectory(csvDir);
-
-            string usuariosPath = Path.Combine(csvDir, "usuarios.csv");
-            string alimentosPath = Path.Combine(csvDir, "alimentos.csv");
-            string menusPath = Path.Combine(csvDir, "menus.csv");
-            string perfilesPath = Path.Combine(csvDir, "perfiles.csv");
-
-            if (!File.Exists(menusPath))
-                File.WriteAllText(menusPath, "UserName,Fecha,NombreAlimento,CantidadGramos,Calorias\n");
-
-            if (!File.Exists(perfilesPath))
-                File.WriteAllText(perfilesPath, "UserName,Edad,PesoKg,AlturaCm,Objetivo\n");
-
-            var loginController = new LoginController(usuariosPath);
-            var alimentoController = new AlimentoController(alimentosPath);
-            var menuController = new MenuController(menusPath);
-            var perfilController = new PerfilController(perfilesPath);
-
-            Application.Run(new FrmLogin(loginController, alimentoController,
-                menuController, perfilController));
-        }
-    }
+    var db = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+    db.Initialize();
 }
 
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.MapBlazorHub();
+app.MapFallbackToPage("/_Host");
+app.Run();
