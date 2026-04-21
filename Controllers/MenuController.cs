@@ -29,8 +29,10 @@ namespace NutricionApp.Controllers
             using var r = cmd.ExecuteReader();
             while (r.Read())
             {
+                // Fix: guardar el Id de la DB en el modelo
                 var m = new Menu(r.GetString(1), DateTime.Parse(r.GetString(2)));
-                m.Items = GetItems(conn, r.GetInt32(0));
+                m.Id    = r.GetInt32(0);
+                m.Items = GetItems(conn, m.Id);
                 menus.Add(m);
             }
             return menus;
@@ -61,7 +63,7 @@ namespace NutricionApp.Controllers
             }
         }
 
-        /// <summary>Elimina un menu por su Id.</summary>
+        /// <summary>Elimina un menu por su Id de base de datos.</summary>
         public void Eliminar(string userName, int menuId)
         {
             using var conn = _db.OpenConnection();

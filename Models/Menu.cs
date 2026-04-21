@@ -5,9 +5,13 @@ namespace NutricionApp.Models
 {
     /// <summary>
     /// Represents a daily menu associated with a user, containing a list of food items consumed.
+    /// Iteracion 2: agrega Id para identificar el registro en la base de datos.
     /// </summary>
     public class Menu
     {
+        /// <summary>Identificador unico del menu en la base de datos.</summary>
+        public int Id { get; set; }
+
         /// <summary>Gets or sets the username associated with this menu.</summary>
         public string UserName { get; set; }
 
@@ -23,8 +27,8 @@ namespace NutricionApp.Models
         public Menu(string userName, DateTime fecha)
         {
             UserName = userName;
-            Fecha = fecha;
-            Items = new List<ItemMenu>();
+            Fecha    = fecha;
+            Items    = new List<ItemMenu>();
         }
 
         /// <summary>Returns the total calories consumed in this menu.</summary>
@@ -96,15 +100,14 @@ namespace NutricionApp.Models
         {
             NombreAlimento = nombreAlimento;
             CantidadGramos = cantidadGramos;
-            Calorias = calorias;
-            Proteinas = proteinas;
-            Carbohidratos = carbohidratos;
-            Grasas = grasas;
+            Calorias       = calorias;
+            Proteinas      = proteinas;
+            Carbohidratos  = carbohidratos;
+            Grasas         = grasas;
         }
 
         /// <summary>
         /// Backward-compatible constructor that only stores calories (macros default to 0).
-        /// Used when loading old CSV rows that lack macro columns.
         /// </summary>
         public ItemMenu(string nombreAlimento, double cantidadGramos, double calorias)
             : this(nombreAlimento, cantidadGramos, calorias, 0, 0, 0)
