@@ -1,79 +1,38 @@
-using Microsoft.Data.Sqlite;
 using NutricionApp.Controllers.Abstractions;
-using NutricionApp.Data;
+using NutricionApp.Data.Repositories.Abstractions;
 using NutricionApp.Models;
 
 namespace NutricionApp.Controllers
 {
     /// <summary>
-    /// Responsabilidad unica: autenticar y registrar usuarios.
-    /// Iteracion 2: implementacion con SQLite.
-    /// Los metodos de gestion administrativa fueron movidos a
-    /// UserManagementController siguiendo SOLID-S e SOLID-I.
+    /// Coordina la autenticacion y registro de usuarios.
+    /// Delega el acceso a datos a IUsuarioRepository (Patron Repository).
+    /// Responsabilidad unica: logica de negocio de autenticacion.
     /// </summary>
     public class LoginController : ILoginController
     {
-        private readonly DatabaseContext _db;
+        private readonly IUsuarioRepository _usuarioRepo;
 
-        public LoginController(DatabaseContext db)
+        public LoginController(IUsuarioRepository usuarioRepo)
         {
-            _db = db;
+            _usuarioRepo = usuarioRepo;
         }
 
-        /// <summary>
-        /// Valida las credenciales del usuario contra la base de datos.
-        /// Solo autentica usuarios activos.
-        /// </summary>
+        /// <summary>Valida las credenciales. Retorna true solo si el usuario existe y esta activo.</summary>
         public bool Login(string userName, string password)
         {
-            using var conn = _db.OpenConnection();
-            var cmd = conn.CreateCommand();
-            cmd.CommandText = @"SELECT COUNT(*) FROM Usuarios
-                                WHERE UserName=@u AND Password=@p AND IsActive=1;";
-            cmd.Parameters.AddWithValue("@u", userName);
-            cmd.Parameters.AddWithValue("@p", password);
-            return (long)cmd.ExecuteScalar()! > 0;
+            return _usuarioRepo.GetByCredentials(userName, password) != null;
         }
 
-        /// <summary>
-        /// Registra un nuevo usuario si el nombre no existe.
-        /// </summary>
+        /// <summary>Registra un nuevo usuario. Retorna false si el nombre ya esta en uso.</summary>
         public bool Register(string userName, string password)
         {
-            using var conn = _db.OpenConnection();
-
-            var check = conn.CreateCommand();
-            check.CommandText = "SELECT COUNT(*) FROM Usuarios WHERE UserName=@u;";
-            check.Parameters.AddWithValue("@u", userName);
-            if ((long)check.ExecuteScalar()! > 0) return false;
-
-            var cmd = conn.CreateCommand();
-            cmd.CommandText = @"INSERT INTO Usuarios(UserName,Password,IsAdmin,IsActive)
-                                VALUES(@u,@p,0,1);";
-            cmd.Parameters.AddWithValue("@u", userName);
-            cmd.Parameters.AddWithValue("@p", password);
-            cmd.ExecuteNonQuery();
+            if (_usuarioRepo.Exists(userName)) return false;
+            _usuarioRepo.Add(userName, password);
             return true;
         }
 
-        /// <summary>
-        /// Retorna el objeto User completo con IsAdmin e IsActive.
-        /// Usado por AppState al completar el login.
-        /// </summary>
-        public User GetUser(string userName)
-        {
-            using var conn = _db.OpenConnection();
-            var cmd = conn.CreateCommand();
-            cmd.CommandText = @"SELECT UserName,Password,IsAdmin,IsActive
-                                FROM Usuarios WHERE UserName=@u;";
-            cmd.Parameters.AddWithValue("@u", userName);
-            using var r = cmd.ExecuteReader();
-            if (!r.Read()) return null;
-            return new User(r.GetString(0), r.GetString(1))
-            {
-                IsAdmin  = r.GetInt32(2) == 1,
-                IsActive = r.GetInt32(3) == 1
-            };
-        }
+        /// <summary>Retorna el objeto User completo para establecer la sesion.</summary>
+        public User GetUser(string userName) => _usuarioRepo.GetByUserName(userName);
     }
 }

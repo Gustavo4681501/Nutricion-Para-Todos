@@ -3,25 +3,31 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NutricionApp.Controllers;
 using NutricionApp.Data;
+using NutricionApp.Data.Repositories;
+using NutricionApp.Data.Repositories.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-// Base de datos SQLite — reemplaza los CSV de la iteracion 1
+// Base de datos SQLite
 builder.Services.AddSingleton<DatabaseContext>();
+
+// Repositorios — acceso a datos (Patron Repository)
+builder.Services.AddScoped<IUsuarioRepository,  UsuarioRepository>();
+builder.Services.AddScoped<IAlimentoRepository, AlimentoRepository>();
+builder.Services.AddScoped<IMenuRepository,     MenuRepository>();
+builder.Services.AddScoped<IPerfilRepository,   PerfilRepository>();
 
 // Estado de sesion por circuito Blazor
 builder.Services.AddScoped<NutricionApp.AppState>();
 
-// Controladores — cada uno con responsabilidad unica (SOLID-S)
+// Controladores — logica de negocio (dependen de repositorios, no de DB directamente)
 builder.Services.AddScoped<LoginController>();
 builder.Services.AddScoped<AlimentoController>();
 builder.Services.AddScoped<MenuController>();
 builder.Services.AddScoped<PerfilController>();
-
-// Iteracion 2: controller de gestion administrativa de usuarios
 builder.Services.AddScoped<UserManagementController>();
 
 var app = builder.Build();
