@@ -15,12 +15,14 @@ namespace NutricionApp
 
         public event Action OnChange;
 
+        /// <summary>Establece el usuario actual y notifica a los componentes que el estado ha cambiado.</summary>
         public void SetUser(User user)
         {
             CurrentUser = user;
             NotifyStateChanged();
         }
 
+        /// <summary>Cierra la sesión del usuario actual.</summary>
         public void Logout()
         {
             CurrentUser = null;

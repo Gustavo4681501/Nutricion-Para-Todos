@@ -6,7 +6,10 @@ namespace NutricionApp.Models
     /// </summary>
     public class User
     {
+        /// <summary>Nombre de usuario único para iniciar sesión.</summary>
         public string UserName { get; set; }
+        
+        /// <summary>Contraseña del usuario.</summary>
         public string Password { get; set; }
 
         /// <summary>Indica si el usuario tiene privilegios de administrador.</summary>
@@ -15,6 +18,7 @@ namespace NutricionApp.Models
         /// <summary>Indica si la cuenta esta activa.</summary>
         public bool IsActive { get; set; } = true;
 
+        /// <summary>Constructor para crear un nuevo usuario con nombre de usuario y contraseña.</summary>
         public User(string userName, string password)
         {
             UserName = userName;

@@ -14,6 +14,7 @@ namespace NutricionApp.Controllers
     {
         private readonly IPerfilRepository _perfilRepo;
 
+        /// <summary>Recibe el repositorio de perfiles por inyeccion de dependencias.</summary>
         public PerfilController(IPerfilRepository perfilRepo)
         {
             _perfilRepo = perfilRepo;

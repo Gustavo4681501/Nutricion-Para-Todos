@@ -15,6 +15,7 @@ namespace NutricionApp.Controllers
     {
         private readonly IMenuRepository _menuRepo;
 
+        /// <summary>Recibe el repositorio de menus por inyeccion de dependencias.</summary>
         public MenuController(IMenuRepository menuRepo)
         {
             _menuRepo = menuRepo;

@@ -14,6 +14,7 @@ namespace NutricionApp.Controllers
     {
         private readonly IAlimentoRepository _alimentoRepo;
 
+        /// <summary>Recibe el repositorio de alimentos por inyeccion de dependencias.</summary>
         public AlimentoController(IAlimentoRepository alimentoRepo)
         {
             _alimentoRepo = alimentoRepo;
