@@ -13,13 +13,22 @@
 
 <h2 class="mb-3"><i class="bi bi-journal-text me-2"></i>Mis Menus</h2>
 
+<!-- Formulario crear / editar menu -->
 <div class="card mb-4 border-success shadow-sm">
-    <div class="card-header bg-success text-white">Registrar menu del dia</div>
+    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+        <span>@(_menuEditando != null ? "Editando menu del " + _menuEditando.Fecha.ToString("dd/MM/yyyy") : "Registrar menu del dia")</span>
+        @if (_menuEditando != null)
+        {
+            <button class="btn btn-sm btn-outline-light" @onclick="CancelarEdicion">
+                <i class="bi bi-x me-1"></i>Cancelar edicion
+            </button>
+        }
+    </div>
     <div class="card-body">
         <div class="row g-2 align-items-end">
             <div class="col-md-3">
                 <label class="form-label">Fecha</label>
-                <input class="form-control" type="date" @bind="_fecha" />
+                <input class="form-control" type="date" @bind="_fecha" disabled="@(_menuEditando != null)" />
             </div>
             <div class="col-md-4">
                 <label class="form-label">Alimento</label>
@@ -73,7 +82,8 @@
                 </tfoot>
             </table>
             <button class="btn btn-success" @onclick="GuardarMenu">
-                <i class="bi bi-floppy me-1"></i>Guardar menu
+                <i class="bi bi-floppy me-1"></i>
+                @(_menuEditando != null ? "Guardar cambios" : "Guardar menu")
             </button>
         }
 
@@ -93,14 +103,26 @@
 
 @foreach (var menu in _menus)
 {
-    <div class="card mb-3">
+    <div class="card mb-3 @(_menuEditando?.Id == menu.Id ? "border-warning border-2" : "")">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-calendar3 me-1"></i>@menu.Fecha.ToString("dd/MM/yyyy")</span>
+            <span>
+                <i class="bi bi-calendar3 me-1"></i>@menu.Fecha.ToString("dd/MM/yyyy")
+                @if (_menuEditando?.Id == menu.Id)
+                {
+                    <span class="badge bg-warning text-dark ms-2">Editando</span>
+                }
+            </span>
             <div>
-                <button class="btn btn-sm btn-outline-success me-1" @onclick="() => DescargarCSV(menu)">
+                <button class="btn btn-sm btn-outline-warning me-1" @onclick="() => IniciarEdicion(menu)"
+                        title="Editar este menu">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-success me-1" @onclick="() => DescargarCSV(menu)"
+                        title="Descargar CSV">
                     <i class="bi bi-download me-1"></i>CSV
                 </button>
-                <button class="btn btn-sm btn-outline-danger" @onclick="() => EliminarMenu(menu)">
+                <button class="btn btn-sm btn-outline-danger" @onclick="() => EliminarMenu(menu)"
+                        title="Eliminar menu">
                     <i class="bi bi-trash"></i>
                 </button>
             </div>
@@ -129,6 +151,7 @@
     List<Menu>     _menus       = new List<Menu>();
     List<Alimento> _alimentos   = new List<Alimento>();
     List<ItemMenu> _itemsNuevos = new List<ItemMenu>();
+    Menu           _menuEditando = null;
     DateTime _fecha       = DateTime.Today;
     string   _alimentoSel = string.Empty;
     double   _cantidad    = 100;
@@ -152,9 +175,22 @@
         _cantidad    = 100;
     }
 
+    /// <summary>
+    /// Guarda o actualiza el menu.
+    /// Si esta editando: elimina el viejo y crea uno nuevo con los items actualizados.
+    /// Si es nuevo: crea directamente.
+    /// </summary>
     void GuardarMenu()
     {
         if (_itemsNuevos.Count == 0) return;
+
+        if (_menuEditando != null)
+        {
+            // Eliminar el menu viejo y crear uno nuevo con los cambios
+            MenuCtrl.Eliminar(AppState.CurrentUser.UserName, _menuEditando.Id);
+            _menuEditando = null;
+        }
+
         var menu = new Menu(AppState.CurrentUser.UserName, _fecha);
         menu.Items = new List<ItemMenu>(_itemsNuevos);
         MenuCtrl.Guardar(menu);
@@ -164,19 +200,34 @@
     }
 
     /// <summary>
-    /// Elimina el menu usando su Id de base de datos — no el indice de la lista.
-    /// Fix: el bug anterior pasaba el indice de la lista en lugar del Id del registro.
+    /// Carga un menu existente en el formulario para editarlo.
+    /// Copia los items actuales para que el usuario pueda modificarlos.
     /// </summary>
+    void IniciarEdicion(Menu menu)
+    {
+        _menuEditando = menu;
+        _fecha        = menu.Fecha;
+        _itemsNuevos  = new List<ItemMenu>(menu.Items);
+        _mensaje      = string.Empty;
+    }
+
+    /// <summary>Cancela la edicion y limpia el formulario.</summary>
+    void CancelarEdicion()
+    {
+        _menuEditando = null;
+        _itemsNuevos  = new List<ItemMenu>();
+        _fecha        = DateTime.Today;
+        _mensaje      = string.Empty;
+    }
+
     void EliminarMenu(Menu menu)
     {
+        if (_menuEditando?.Id == menu.Id) CancelarEdicion();
         MenuCtrl.Eliminar(AppState.CurrentUser.UserName, menu.Id);
         _menus = MenuCtrl.ObtenerPorUsuario(AppState.CurrentUser.UserName);
     }
 
-    /// <summary>
-    /// Genera el CSV del menu y lo descarga usando un enlace temporal.
-    /// Fix: usa URL de datos directamente en lugar de eval() para mayor compatibilidad.
-    /// </summary>
+    /// <summary>Genera el CSV del menu y lo descarga.</summary>
     async Task DescargarCSV(Menu m)
     {
         var sb = new StringBuilder();

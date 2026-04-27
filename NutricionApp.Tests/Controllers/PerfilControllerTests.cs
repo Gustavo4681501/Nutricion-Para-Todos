@@ -8,17 +8,18 @@ namespace NutricionApp.Tests.Controllers
 {
     /// <summary>
     /// Tests unitarios para PerfilController.
+    /// Actualizado para usar IPerfilRepository (Patron Repository).
     /// Cubre: ObtenerPerfil, GuardarPerfil, DistribucionDietas.
     /// </summary>
     public class PerfilControllerTests : IDisposable
     {
         private readonly TestDatabaseFactory _factory;
-        private readonly PerfilController _controller;
+        private readonly PerfilController    _controller;
 
         public PerfilControllerTests()
         {
             _factory    = new TestDatabaseFactory();
-            _controller = new PerfilController(_factory.CreateContext());
+            _controller = new PerfilController(_factory.CreatePerfilRepository());
         }
 
         // ── ObtenerPerfil ──────────────────────────────────────
@@ -36,7 +37,6 @@ namespace NutricionApp.Tests.Controllers
         [Fact]
         public void ObtenerPerfil_UsuarioSinPerfil_RetornaPerfilDefault()
         {
-            // "admin" no tiene perfil en el seed
             var perfil = _controller.ObtenerPerfil("admin");
             Assert.NotNull(perfil);
             Assert.Equal("admin", perfil.UserName);
@@ -71,7 +71,6 @@ namespace NutricionApp.Tests.Controllers
                 Dieta     = TipoDieta.Estandar
             };
             _controller.GuardarPerfil(nuevo);
-
             var recuperado = _controller.ObtenerPerfil("admin");
             Assert.Equal(30, recuperado.Edad);
             Assert.Equal(75, recuperado.PesoKg);
@@ -83,7 +82,6 @@ namespace NutricionApp.Tests.Controllers
             var perfil = _controller.ObtenerPerfil("Randy");
             perfil.PesoKg = 999;
             _controller.GuardarPerfil(perfil);
-
             var actualizado = _controller.ObtenerPerfil("Randy");
             Assert.Equal(999, actualizado.PesoKg);
         }
@@ -94,7 +92,6 @@ namespace NutricionApp.Tests.Controllers
             var perfil = _controller.ObtenerPerfil("Randy");
             perfil.Dieta = TipoDieta.Keto;
             _controller.GuardarPerfil(perfil);
-
             var actualizado = _controller.ObtenerPerfil("Randy");
             Assert.Equal(TipoDieta.Keto, actualizado.Dieta);
         }
@@ -109,10 +106,9 @@ namespace NutricionApp.Tests.Controllers
         }
 
         [Fact]
-        public void DistribucionDietas_ContieneTrestipos()
+        public void DistribucionDietas_ContieneTresTipos()
         {
             var dist = _controller.DistribucionDietas();
-            // El seed tiene Estandar, Keto y Vegetariano
             Assert.Equal(3, dist.Count);
         }
 

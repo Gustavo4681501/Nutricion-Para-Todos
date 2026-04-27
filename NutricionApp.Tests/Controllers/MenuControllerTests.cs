@@ -9,17 +9,18 @@ namespace NutricionApp.Tests.Controllers
 {
     /// <summary>
     /// Tests unitarios para MenuController.
+    /// Actualizado para usar IMenuRepository (Patron Repository).
     /// Cubre: ObtenerPorUsuario, Guardar, Eliminar, AlimentoMasConsumido, TopUsuariosPorMenus.
     /// </summary>
     public class MenuControllerTests : IDisposable
     {
         private readonly TestDatabaseFactory _factory;
-        private readonly MenuController _controller;
+        private readonly MenuController      _controller;
 
         public MenuControllerTests()
         {
             _factory    = new TestDatabaseFactory();
-            _controller = new MenuController(_factory.CreateContext());
+            _controller = new MenuController(_factory.CreateMenuRepository());
         }
 
         private Menu CrearMenuConItems(string userName)
@@ -45,9 +46,7 @@ namespace NutricionApp.Tests.Controllers
         [Fact]
         public void ObtenerPorUsuario_ConMenuGuardado_RetornaElMenu()
         {
-            var menu = CrearMenuConItems("Randy");
-            _controller.Guardar(menu);
-
+            _controller.Guardar(CrearMenuConItems("Randy"));
             var menus = _controller.ObtenerPorUsuario("Randy");
             Assert.NotEmpty(menus);
         }
@@ -57,9 +56,7 @@ namespace NutricionApp.Tests.Controllers
         [Fact]
         public void Guardar_MenuConItems_SeGuardaCorrectamente()
         {
-            var menu = CrearMenuConItems("Luis");
-            _controller.Guardar(menu);
-
+            _controller.Guardar(CrearMenuConItems("Luis"));
             var menus = _controller.ObtenerPorUsuario("Luis");
             Assert.Single(menus);
             Assert.Equal(2, menus[0].Items.Count);
@@ -70,7 +67,6 @@ namespace NutricionApp.Tests.Controllers
         {
             _controller.Guardar(CrearMenuConItems("Ana"));
             _controller.Guardar(CrearMenuConItems("Ana"));
-
             var menus = _controller.ObtenerPorUsuario("Ana");
             Assert.Equal(2, menus.Count);
         }
@@ -78,9 +74,7 @@ namespace NutricionApp.Tests.Controllers
         [Fact]
         public void Guardar_ItemsConCaloriasCorrectas()
         {
-            var menu = CrearMenuConItems("Jose");
-            _controller.Guardar(menu);
-
+            _controller.Guardar(CrearMenuConItems("Jose"));
             var menus = _controller.ObtenerPorUsuario("Jose");
             Assert.Equal(260, menus[0].Items[0].Calorias);
         }
@@ -90,13 +84,10 @@ namespace NutricionApp.Tests.Controllers
         [Fact]
         public void Eliminar_MenuExistente_SeElimina()
         {
-            var menu = CrearMenuConItems("Carlos");
-            _controller.Guardar(menu);
-
+            _controller.Guardar(CrearMenuConItems("Carlos"));
             var menus = _controller.ObtenerPorUsuario("Carlos");
-            int menuId = 1; // primer menu en la BD limpia
-            _controller.Eliminar("Carlos", menuId);
-
+            Assert.NotEmpty(menus);
+            _controller.Eliminar("Carlos", menus[0].Id);
             var despues = _controller.ObtenerPorUsuario("Carlos");
             Assert.Empty(despues);
         }
@@ -106,20 +97,15 @@ namespace NutricionApp.Tests.Controllers
         [Fact]
         public void AlimentoMasConsumido_SinDatos_RetornaSinDatos()
         {
-            var resultado = _controller.AlimentoMasConsumido(
-                DateTime.Today.AddDays(-30), DateTime.Today);
+            var resultado = _controller.AlimentoMasConsumido(DateTime.Today.AddDays(-30), DateTime.Today);
             Assert.Equal("Sin datos", resultado);
         }
 
         [Fact]
         public void AlimentoMasConsumido_ConDatos_RetornaElMasConsumido()
         {
-            // Guardar dos menus con mismo alimento para que sea el mas consumido
             var m1 = new Menu("Randy", DateTime.Today);
-            m1.Items = new List<ItemMenu>
-            {
-                new ItemMenu("Arroz blanco cocido", 300, 390, 8.1, 84.6, 0.9)
-            };
+            m1.Items = new List<ItemMenu> { new ItemMenu("Arroz blanco cocido", 300, 390, 8.1, 84.6, 0.9) };
             var m2 = new Menu("Randy", DateTime.Today.AddDays(-1));
             m2.Items = new List<ItemMenu>
             {
@@ -128,9 +114,7 @@ namespace NutricionApp.Tests.Controllers
             };
             _controller.Guardar(m1);
             _controller.Guardar(m2);
-
-            var resultado = _controller.AlimentoMasConsumido(
-                DateTime.Today.AddDays(-7), DateTime.Today);
+            var resultado = _controller.AlimentoMasConsumido(DateTime.Today.AddDays(-7), DateTime.Today);
             Assert.Equal("Arroz blanco cocido", resultado);
         }
 
@@ -146,12 +130,10 @@ namespace NutricionApp.Tests.Controllers
         [Fact]
         public void TopUsuariosPorMenus_ConDatos_OrdenadoDescendente()
         {
-            // Randy: 3 menus, Ana: 1 menu
             _controller.Guardar(CrearMenuConItems("Randy"));
             _controller.Guardar(CrearMenuConItems("Randy"));
             _controller.Guardar(CrearMenuConItems("Randy"));
             _controller.Guardar(CrearMenuConItems("Ana"));
-
             var top = _controller.TopUsuariosPorMenus(5);
             Assert.Equal("Randy", top[0].UserName);
             Assert.Equal(3, top[0].Count);
