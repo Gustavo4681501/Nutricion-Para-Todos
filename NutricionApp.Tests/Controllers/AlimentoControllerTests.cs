@@ -8,17 +8,18 @@ namespace NutricionApp.Tests.Controllers
 {
     /// <summary>
     /// Tests unitarios para AlimentoController.
+    /// Actualizado para usar IAlimentoRepository (Patron Repository).
     /// Cubre: ObtenerTodos, ObtenerPorNombre, Agregar, Actualizar, EliminarPorNombre.
     /// </summary>
     public class AlimentoControllerTests : IDisposable
     {
         private readonly TestDatabaseFactory _factory;
-        private readonly AlimentoController _controller;
+        private readonly AlimentoController  _controller;
 
         public AlimentoControllerTests()
         {
             _factory    = new TestDatabaseFactory();
-            _controller = new AlimentoController(_factory.CreateContext());
+            _controller = new AlimentoController(_factory.CreateAlimentoRepository());
         }
 
         // ── ObtenerTodos ───────────────────────────────────────
@@ -42,7 +43,7 @@ namespace NutricionApp.Tests.Controllers
         {
             var lista = _controller.ObtenerTodos();
             for (int i = 0; i < lista.Count - 1; i++)
-                Assert.True(string.Compare(lista[i].Nombre, lista[i + 1].Nombre) <= 0);
+                Assert.True(string.Compare(lista[i].Nombre, lista[i + 1].Nombre, StringComparison.OrdinalIgnoreCase) <= 0);
         }
 
         // ── ObtenerPorNombre ───────────────────────────────────
@@ -78,7 +79,6 @@ namespace NutricionApp.Tests.Controllers
         {
             var nuevo = new Alimento("AlimentoTest", 100, 5, 20, 3, 100);
             _controller.Agregar(nuevo);
-
             var encontrado = _controller.ObtenerPorNombre("AlimentoTest");
             Assert.NotNull(encontrado);
             Assert.Equal(100, encontrado.Calorias);
@@ -101,7 +101,6 @@ namespace NutricionApp.Tests.Controllers
             var a = _controller.ObtenerPorNombre("Banana");
             a.Calorias = 999;
             _controller.Actualizar(a);
-
             var actualizado = _controller.ObtenerPorNombre("Banana");
             Assert.Equal(999, actualizado.Calorias);
         }
@@ -113,7 +112,6 @@ namespace NutricionApp.Tests.Controllers
         {
             _controller.Agregar(new Alimento("AlimentoAEliminar", 100, 5, 20, 3, 100));
             _controller.EliminarPorNombre("AlimentoAEliminar");
-
             var resultado = _controller.ObtenerPorNombre("AlimentoAEliminar");
             Assert.Null(resultado);
         }

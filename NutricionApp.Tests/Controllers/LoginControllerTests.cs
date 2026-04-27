@@ -7,6 +7,7 @@ namespace NutricionApp.Tests.Controllers
 {
     /// <summary>
     /// Tests unitarios para LoginController.
+    /// Actualizado para usar IUsuarioRepository (Patron Repository).
     /// Cubre: Login, Register, GetUser.
     /// </summary>
     public class LoginControllerTests : IDisposable
@@ -17,7 +18,7 @@ namespace NutricionApp.Tests.Controllers
         public LoginControllerTests()
         {
             _factory    = new TestDatabaseFactory();
-            _controller = new LoginController(_factory.CreateContext());
+            _controller = new LoginController(_factory.CreateUsuarioRepository());
         }
 
         // ── Login ──────────────────────────────────────────────
@@ -25,7 +26,6 @@ namespace NutricionApp.Tests.Controllers
         [Fact]
         public void Login_CredencialesCorrectas_RetornaTrue()
         {
-            // El seed crea usuario Randy/123
             bool resultado = _controller.Login("Randy", "123");
             Assert.True(resultado);
         }
@@ -54,7 +54,6 @@ namespace NutricionApp.Tests.Controllers
         [Fact]
         public void Login_UsuarioInactivo_RetornaFalse()
         {
-            // Registrar usuario y desactivarlo manualmente
             _controller.Register("usuarioTest", "pass123");
             using var conn = _factory.CreateContext().OpenConnection();
             var cmd = conn.CreateCommand();
@@ -83,7 +82,7 @@ namespace NutricionApp.Tests.Controllers
         }
 
         [Fact]
-        public void Register_UsuarioNuevo_PuedHacerLoginDespues()
+        public void Register_UsuarioNuevo_PuedeHacerLoginDespues()
         {
             _controller.Register("NuevoTest", "miPass");
             bool login = _controller.Login("NuevoTest", "miPass");
