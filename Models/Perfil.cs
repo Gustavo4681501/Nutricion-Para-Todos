@@ -4,7 +4,7 @@ using System.Globalization;
 namespace NutricionApp.Models
 {
     /// <summary>
-    /// Represents the nutritional goal of a user.
+    /// Representa el objetivo nutricional de un usuario.
     /// </summary>
     public enum ObjetivoNutricional
     {
@@ -14,21 +14,21 @@ namespace NutricionApp.Models
     }
 
     /// <summary>
-    /// Represents the physical activity level of a user,
-    /// used to adjust the daily calorie calculation (TDEE).
+    /// Representa el nivel de actividad física de un usuario,
+    /// utilizado para ajustar el cálculo de calorías diarias (TDEE).
     /// </summary>
     public enum NivelActividad
     {
-        Sedentario,      // Little or no exercise
-        Ligero,          // Light exercise 1-3 days/week
-        Moderado,        // Moderate exercise 3-5 days/week
-        Activo,          // Hard exercise 6-7 days/week
-        MuyActivo        // Very hard exercise or physical job
+        Sedentario,      // Poco o ningún ejercicio
+        Ligero,          // Ejercicio ligero 1-3 días/semana
+        Moderado,        // Ejercicio moderado 3-5 días/semana
+        Activo,          // Ejercicio intenso 6-7 días/semana
+        MuyActivo        // Ejercicio muy intenso o trabajo físico
     }
 
     /// <summary>
-    /// Represents the type of diet followed by the user,
-    /// which influences macronutrient distribution recommendations.
+    /// Representa el tipo de dieta seguida por el usuario,
+    /// lo que influye en las recomendaciones de distribución de macronutrientes.
     /// </summary>
     public enum TipoDieta
     {
@@ -38,36 +38,36 @@ namespace NutricionApp.Models
     }
 
     /// <summary>
-    /// Represents a user's nutritional profile, including personal data
-    /// and methods to calculate health-related metrics.
+    /// Representa el perfil nutricional de un usuario, incluyendo datos personales
+    /// y métodos para calcular métricas relacionadas con la salud.
     /// </summary>
     public class Perfil
     {
-        /// <summary>Gets or sets the username associated with this profile.</summary>
+        /// <summary>Obtiene o establece el nombre de usuario asociado con este perfil.</summary>
         public string UserName { get; set; }
 
-        /// <summary>Gets or sets the user's age in years.</summary>
+        /// <summary>Obtiene o establece la edad del usuario en años.</summary>
         public int Edad { get; set; }
 
-        /// <summary>Gets or sets the user's weight in kilograms.</summary>
+        /// <summary>Obtiene o establece el peso del usuario en kilogramos.</summary>
         public double PesoKg { get; set; }
 
-        /// <summary>Gets or sets the user's height in centimeters.</summary>
+        /// <summary>Obtiene o establece la altura del usuario en centímetros.</summary>
         public double AlturaCm { get; set; }
 
-        /// <summary>Gets or sets the user's nutritional goal.</summary>
+        /// <summary>Obtiene o establece el objetivo nutricional del usuario.</summary>
         public ObjetivoNutricional Objetivo { get; set; }
 
-        /// <summary>Gets or sets the user's physical activity level.</summary>
+        /// <summary>Obtiene o establece el nivel de actividad física del usuario.</summary>
         public NivelActividad Actividad { get; set; }
 
-        /// <summary>Gets or sets the type of diet the user follows.</summary>
+        /// <summary>Obtiene o establece el tipo de dieta que sigue el usuario.</summary>
         public TipoDieta Dieta { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Perfil"/> class with default values.
+        /// Inicializa una nueva instancia de la clase <see cref="Perfil"/> con valores predeterminados.
         /// </summary>
-        /// <param name="userName">The username associated with this profile.</param>
+        /// <param name="userName">El nombre de usuario asociado con este perfil.</param>
         public Perfil(string userName)
         {
             UserName = userName;
@@ -80,10 +80,10 @@ namespace NutricionApp.Models
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Perfil"/> class from a CSV row.
-        /// Supports both old format (5 columns) and new format (7 columns) for backward compatibility.
+        /// Inicializa una nueva instancia de la clase <see cref="Perfil"/> a partir de una fila de CSV.
+        /// Soporta tanto el formato antiguo (5 columnas) como el nuevo (7 columnas) para compatibilidad hacia atrás.
         /// </summary>
-        /// <param name="fila">Array of values read from a CSV file.</param>
+       
         public Perfil(string[] fila)
         {
             UserName = fila[0].Trim();
@@ -92,7 +92,7 @@ namespace NutricionApp.Models
             AlturaCm = double.Parse(fila[3].Trim(), CultureInfo.InvariantCulture);
             Objetivo = (ObjetivoNutricional)Enum.Parse(typeof(ObjetivoNutricional), fila[4].Trim());
 
-            // Backward compatibility: if old CSV only had 5 columns, use defaults
+            // Compatibilidad hacia atrás: si el CSV antiguo solo tenía 5 columnas, usar valores predeterminados
             Actividad = fila.Length > 5
                 ? (NivelActividad)Enum.Parse(typeof(NivelActividad), fila[5].Trim())
                 : NivelActividad.Moderado;
@@ -103,8 +103,8 @@ namespace NutricionApp.Models
         }
 
         /// <summary>
-        /// Returns the activity multiplier (PAL) corresponding to the user's activity level.
-        /// Based on the Harris-Benedict / Mifflin-St Jeor activity factors.
+        /// Devuelve el multiplicador de actividad (PAL) correspondiente al nivel de actividad del usuario.
+        /// Basado en los factores de actividad de Harris-Benedict / Mifflin-St Jeor.
         /// </summary>
         private double FactorActividad()
         {
@@ -120,13 +120,12 @@ namespace NutricionApp.Models
         }
 
         /// <summary>
-        /// Calculates the recommended daily calorie intake using the Mifflin-St Jeor formula,
-        /// adjusted by the user's activity level and nutritional goal.
+        /// Calcula la ingesta diaria recomendada de calorías utilizando la fórmula de Mifflin-St Jeor,
+        /// ajustada por el nivel de actividad del usuario y el objetivo nutricional.
         /// </summary>
-        /// <returns>The recommended daily calories (kcal).</returns>
+        
         public double CaloriasRecomendadas()
         {
-            // Mifflin-St Jeor BMR (assuming male formula; can be extended with gender field)
             double tmb = 10 * PesoKg + 6.25 * AlturaCm - 5 * Edad + 5;
             double tdee = tmb * FactorActividad();
 
@@ -139,9 +138,9 @@ namespace NutricionApp.Models
         }
 
         /// <summary>
-        /// Returns the recommended macronutrient distribution in grams based on the diet type.
-        /// Values are proportional to the total daily calories.
-        /// Returns a tuple: (proteinasG, carbohidratosG, grasasG).
+        /// Devuelve la distribución recomendada de macronutrientes en gramos según el tipo de dieta.
+        /// Los valores son proporcionales a las calorías diarias totales.
+        /// Devuelve una tupla: (proteinasG, carbohidratosG, grasasG).
         /// </summary>
         public (double Proteinas, double Carbohidratos, double Grasas) MacrosRecomendados()
         {
@@ -178,11 +177,9 @@ namespace NutricionApp.Models
         }
 
         /// <summary>
-        /// Calculates the Body Mass Index (BMI) using the current weight in kilograms and height in centimeters.
+        /// Calcula el Índice de Masa Corporal (IMC) utilizando el peso actual en kilogramos y la altura en centímetros.
         /// </summary>
-        /// <remarks>Height is converted from centimeters to meters before calculation. Ensure that both
-        /// weight and height are set to valid, positive values to obtain an accurate BMI result.</remarks>
-        /// <returns>The BMI value as a double, representing the ratio of weight to height squared (kg/m²).</returns>
+        
         public double IMC()
         {
             double alturaM = AlturaCm / 100.0;
@@ -190,12 +187,9 @@ namespace NutricionApp.Models
         }
 
         /// <summary>
-        /// Converts the profile data to a comma-separated values (CSV) formatted string.
+        /// Convierte los datos del perfil a una cadena de valores separados por comas (CSV).
         /// </summary>
-        /// <remarks>The returned CSV string uses invariant culture formatting to ensure consistent number
-        /// formatting regardless of locale.</remarks>
-        /// <returns>A string containing the user name, age, weight in kilograms, height in centimeters, goal, activity level,
-        /// and diet, separated by commas.</returns>
+        
         public string ToCsv()
         {
             return string.Format(CultureInfo.InvariantCulture,

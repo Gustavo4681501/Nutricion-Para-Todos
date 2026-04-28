@@ -16,6 +16,11 @@ namespace NutricionApp.Tests.Controllers
         private readonly UserManagementController _controller;
         private readonly LoginController          _loginCtrl;
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase UserManagementControllerTests, configurando el contexto de la base de datos de prueba
+        /// y los controladores necesarios para las pruebas unitarias.
+        /// </summary>
+        
         public UserManagementControllerTests()
         {
             _factory    = new TestDatabaseFactory();
@@ -120,6 +125,9 @@ namespace NutricionApp.Tests.Controllers
             int despues = _controller.GetAll().Count;
             Assert.Equal(antes - 1, despues);
         }
+        /// <summary>
+        /// Libera todos los recursos utilizados por la instancia actual.
+        /// </summary>
 
         public void Dispose() => _factory.Dispose();
     }
