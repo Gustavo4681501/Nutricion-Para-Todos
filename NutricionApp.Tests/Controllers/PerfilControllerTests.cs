@@ -16,6 +16,10 @@ namespace NutricionApp.Tests.Controllers
         private readonly TestDatabaseFactory _factory;
         private readonly PerfilController    _controller;
 
+        /// <summary>
+        /// Inicializa una nueva instancia de la clase PerfilControllerTests para pruebas unitarias del PerfilController.
+        /// </summary>
+        
         public PerfilControllerTests()
         {
             _factory    = new TestDatabaseFactory();
