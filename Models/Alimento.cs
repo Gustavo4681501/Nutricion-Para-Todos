@@ -79,10 +79,7 @@ namespace NutricionApp.Models
                 Nombre, Calorias, Proteinas, Carbohidratos, Grasas, Porcion);
         }
 
-        /// <summary>
-        /// Devuelve una cadena que representa el objeto actual.
-        /// </summary>
-        
+        /// <summary> sobrescribe el metodo ToString para retornar el nombre del alimento, facilitando su visualizacion en listas o interfaces de usuario.</summary>
         public override string ToString() => Nombre;
     }
 }

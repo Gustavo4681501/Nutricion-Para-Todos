@@ -13,6 +13,7 @@ namespace NutricionApp.Controllers
     {
         private readonly IUsuarioRepository _usuarioRepo;
 
+        /// <summary>Recibe el repositorio de usuarios por inyeccion de dependencias.</summary>
         public LoginController(IUsuarioRepository usuarioRepo)
         {
             _usuarioRepo = usuarioRepo;

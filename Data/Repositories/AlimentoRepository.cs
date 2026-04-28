@@ -13,6 +13,7 @@ namespace NutricionApp.Data.Repositories
     {
         private readonly DatabaseContext _db;
 
+        /// <summary>Recibe el contexto de base de datos para abrir conexiones.</summary>
         public AlimentoRepository(DatabaseContext db) { _db = db; }
 
         /// <summary>Retorna todos los alimentos ordenados por nombre.</summary>
