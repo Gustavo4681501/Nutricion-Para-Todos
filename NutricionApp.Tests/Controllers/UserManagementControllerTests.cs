@@ -7,20 +7,21 @@ namespace NutricionApp.Tests.Controllers
 {
     /// <summary>
     /// Tests unitarios para UserManagementController.
+    /// Actualizado para usar IUsuarioRepository (Patron Repository).
     /// Cubre: GetAll, ResetPassword, SetActive, EliminarUsuario.
     /// </summary>
     public class UserManagementControllerTests : IDisposable
     {
-        private readonly TestDatabaseFactory _factory;
+        private readonly TestDatabaseFactory      _factory;
         private readonly UserManagementController _controller;
-        private readonly LoginController _loginCtrl;
+        private readonly LoginController          _loginCtrl;
 
         public UserManagementControllerTests()
         {
             _factory    = new TestDatabaseFactory();
-            var ctx     = _factory.CreateContext();
-            _controller = new UserManagementController(ctx);
-            _loginCtrl  = new LoginController(ctx);
+            var repo    = _factory.CreateUsuarioRepository();
+            _controller = new UserManagementController(repo);
+            _loginCtrl  = new LoginController(repo);
         }
 
         // ── GetAll ─────────────────────────────────────────────
@@ -43,7 +44,6 @@ namespace NutricionApp.Tests.Controllers
         public void GetAll_ContieneTodosLosUsuariosDelSeed()
         {
             var usuarios = _controller.GetAll();
-            // seed tiene 27 usuarios + admin = 28
             Assert.True(usuarios.Count >= 28);
         }
 
